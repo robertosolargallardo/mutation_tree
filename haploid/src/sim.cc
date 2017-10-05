@@ -35,7 +35,10 @@ int main(int argc,char** argv) {
     }
 	 
 	 pop p(POPULATION_SIZE,PROFILE);
-    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; step++) p.drift();
+    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; step++){
+		 std::cout << step << std::endl;
+		 p.drift();
+	 }
 	
     /*geneset* gs=new geneset(POPULATION_SIZE,LOCUS_LENGTH,MUTATION_RATE);
 

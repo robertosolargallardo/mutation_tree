@@ -10,28 +10,21 @@ pop::pop(const uint32_t &_population_size,const json &_profile){
 	this->_number_of_genes=_profile["individual"]["genes"].size();
 	this->_pool=std::make_unique<gene[]>(this->_number_of_genes);
 
-	for(uint32_t i=0U;i<this->_number_of_genes;++i){
-		this->_pool[i]._type=_profile["individual"]["genes"][i]["type"];
-		this->_pool[i]._rate=_profile["individual"]["genes"][i]["mutation"]["rate"];
-		this->_pool[i]._length=(_profile["individual"]["genes"][i].find("length")==_profile["individual"]["genes"][i].end())?0U:_profile["individual"]["genes"][i]["length"].get<uint32_t>();
-
-		this->_pool[i]._root=std::make_shared<node>();
-		this->_pool[i]._alleles.reserve(this->_population_size);
-
-		for(uint32_t j=0U;j<this->_population_size;++j){
-			this->_pool[i]._alleles.push_back(std::make_shared<node>());
-			this->_pool[i]._alleles.back()->parent(this->_pool[i]._root);
-			this->_pool[i]._root->child(this->_pool[i]._alleles.back());
-		}
+	for(uint32_t gid=0U;gid<this->_number_of_genes;++gid){
+		this->_pool[gid].type(_profile["individual"]["genes"][gid]["type"]);
+		this->_pool[gid].rate(_profile["individual"]["genes"][gid]["mutation"]["rate"]);
+		this->_pool[gid].length((_profile["individual"]["genes"][gid].find("length")==_profile["individual"]["genes"][gid].end())?0U:_profile["individual"]["genes"][gid]["length"].get<uint32_t>());
+		this->_pool[gid].create(this->_population_size);
 	}
-	
-	this->_individuals.reserve(this->_population_size);
+		
 	this->_index.reserve(this->_population_size);
+	this->_individuals.reserve(this->_population_size);
+
    for(uint32_t i=0U;i<this->_population_size;++i){
 		this->_index.push_back(i);
 		this->_individuals.push_back(individual(this->_number_of_genes));
-		for(uint32_t j=0U;j<this->_number_of_genes;++j)
-			this->_individuals.back().set(j,this->_pool[j]._alleles[i]);
+		for(uint32_t gid=0U;gid<this->_number_of_genes;++gid)
+			this->_individuals.back().set(gid,this->_pool[gid].get(i));
 	}
 }
 pop& pop::operator=(const pop &_pop){
@@ -47,27 +40,28 @@ void pop::drift(void){
 	/*TODO poner en una funcion*/
 	uint32_t mutations[this->_number_of_genes],number_of_mutations=0U;
 	uint32_t t=this->_population_size;
+
 	for(uint32_t i=0U;i<this->_number_of_genes;++i){
-		switch(this->_pool[i]._type){
+		switch(this->_pool[i].type()){
 			case SNP:{
-				t=this->_population_size*this->_pool[i]._length;
+				t=this->_population_size*this->_pool[i].length();
 				break;
 			}
 			case STR:{
 				break;
 			}
 			default:{
-				std::cerr << "error::unknown marker type: " << this->_pool[i]._type << std::endl;
+				std::cerr << "error::unknown marker type: " << this->_pool[i].type() << std::endl;
 				exit(EXIT_FAILURE);
 			}
 		}
-		std::binomial_distribution<uint32_t> binomial(t,this->_pool[i]._rate);
+		std::binomial_distribution<uint32_t> binomial(t,this->_pool[i].rate());
 		mutations[i]=binomial(rng);
 		number_of_mutations+=mutations[i];
 	}
 	/*TODO poner en una funcion*/
 
-	uint32_t j=0U,k=0U,m=0U;
+	uint32_t position=0U,k=0U,m=0U;
 	for(uint32_t i=0U;i<this->_population_size;++i){
 		k=this->_index[uniform(rng)];
 
@@ -75,18 +69,18 @@ void pop::drift(void){
 			individual mutant(this->_individuals[k]);
 			mutant.references(0U);
 			std::shared_ptr<node> allele=std::make_shared<node>();
-			allele->parent(mutant._genes[j]);
-			mutant._genes[j]->child(allele);
+			allele->parent(mutant.get(position));
+			mutant.get(position)->child(allele);
 
 			allele->mutate();
-			mutant.set(j,allele);
+			mutant.set(position,allele);
 			mutant.increase();
-			this->_pool[j]._alleles.push_back(allele);
+			this->_pool[position].insert(allele);
 			this->_individuals.push_back(mutant);
 			
 			++m;
-			if(m==mutations[j]){
-				++j;
+			if(m==mutations[position]){
+				++position;
 				m=0U;
 			}
 		}
@@ -105,7 +99,7 @@ void pop::rebuild(void){
 		if(i->references()==0U)
 			this->_individuals.erase(i);
 		else{
-			for(uint32_t j=0U;j<i->_references;++j)
+			for(uint32_t j=0U;j<i->references();++j)
 				this->_index.push_back(k);
 			i->references(0U);
 

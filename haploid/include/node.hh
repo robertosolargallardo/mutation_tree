@@ -7,7 +7,7 @@ private:
     std::vector<std::shared_ptr<node>> _children;
     uint32_t                           _references;
 
-	 uint32_t									_counter;
+	 uint32_t									_number_of_mutations;
     std::vector<uint32_t>              _mutations;
 
 public:
