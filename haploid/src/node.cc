@@ -1,19 +1,22 @@
 #include <node.hh>
 node::node(void) {
-    this->_references=0U;
     this->_parent=nullptr;
+	 this->_counter=0U;
+    this->_references=0U;
 }
 node::node(const node &_node) {
     this->_references=_node._references;
     this->_parent=_node._parent;
     this->_children=_node._children;
     this->_mutations=_node._mutations;
+	 this->_counter=_node._counter;
 }
 node& node::operator=(const node &_node) {
     this->_references=_node._references;
     this->_parent=_node._parent;
     this->_children=_node._children;
     this->_mutations=_node._mutations;
+	 this->_counter=_node._counter;
     return(*this);
 }
 node::~node(void) {
@@ -21,7 +24,7 @@ node::~node(void) {
     this->_mutations.clear();
 	 this->_children.clear();
 }
-void node::insert(std::shared_ptr<node> &_node) {
+void node::child(std::shared_ptr<node> &_node) {
     this->_children.push_back(_node);
 }
 void node::remove(std::shared_ptr<node> _node) {
@@ -36,13 +39,14 @@ void node::remove(std::shared_ptr<node> _node) {
                 this->parent()->remove(shared_from_this());
             else if(this->children().size()==1U) {
                 if(this->parent()) {
-                    this->children().back()->mutations().insert(this->children().back()->mutations().begin(),this->mutations().begin(),this->mutations().end());
-                    this->parent()->insert(this->children().back());
+                    //this->children().back()->mutations().insert(this->children().back()->mutations().begin(),this->mutations().begin(),this->mutations().end());
+                    this->children().back()->_counter+=this->_counter;
+                    this->parent()->child(this->children().back());
                     this->children().back()->parent(this->parent());
                     this->children().pop_back();
                     this->remove();
                 } else
-                    this->children().back()->mutations().clear();
+                    this->children().back()->_counter=0U; //this->children().back()->mutations().clear();
             }
         }
     }
@@ -71,6 +75,7 @@ void node::increase(void) {
     this->_references++;
 }
 void node::clear(void) {
+    this->_counter=0U;
     this->_references=0U;
     this->_mutations.clear();
 }
@@ -82,6 +87,9 @@ void node::references(const uint32_t &_references) {
 }
 void node::mutate(const uint32_t &_mutation) {
     this->_mutations.push_back(_mutation);
+}
+void node::mutate(void) {
+    this->_counter++;
 }
 std::vector<std::shared_ptr<node>>& node::children(void) {
     return(this->_children);

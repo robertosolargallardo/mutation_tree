@@ -17,7 +17,7 @@ geneset::geneset(const uint32_t &_population_size,const uint32_t &_locus_length,
         individual->parent(this->_root);
 		  this->_root->insert(individual);
 		  this->_leafs.push_back(individual);
-		  this->_index.push_back(i);
+		  this->_index.push_back(individual);
     }
 	 std::random_shuffle(this->_index.begin(),this->_index.end());
 }
@@ -36,19 +36,17 @@ void geneset::drift(void) {
 	 std::uniform_int_distribution<uint32_t> mutation(0U,this->_locus_length-1U);
 	
 	 uint32_t k=0U;
-    for(uint32_t i=0; i<this->_population_size; i++){
+    for(uint32_t i=0; i<this->_population_size-number_of_mutations; ++i){
 		k=choose(rng);
-		
-		if(i<number_of_mutations){
-         std::shared_ptr<node> child=std::make_shared<node>();
-         child->mutate(mutation(rng));
-			child->increase();
-         this->_leafs[this->_index[k]]->insert(child);
-         child->parent(this->_leafs[this->_index[k]]);
-			this->_leafs.push_back(child);
-		}
-		else
-			this->_leafs[this->_index[k]]->increase();
+		this->_index[k]->increase();
+	 }
+    for(uint32_t i=0; i<number_of_mutations; ++i){
+      std::shared_ptr<node> child=std::make_shared<node>();
+      child->mutate(mutation(rng));
+		child->increase();
+      this->_index[k]->insert(child);
+      child->parent(this->_index[k]);
+		this->_leafs.push_back(child);
 	 }
 	 end=std::chrono::steady_clock::now();
 
@@ -59,7 +57,6 @@ void geneset::drift(void) {
 	 std::cout << "number_of_alleles::" << this->_leafs.size() << std::endl;*/
 }
 void geneset::rebuild(void){
-	uint32_t k=0U;
 	this->_index.clear();
 	for(std::vector<std::shared_ptr<node>>::iterator i=this->_leafs.begin();i!=this->_leafs.end();){
 		if((*i)->references()==0){
@@ -68,11 +65,11 @@ void geneset::rebuild(void){
 		}
 		else{
 			for(uint32_t j=0U;j<(*i)->references();j++)
-				this->_index.push_back(k);
-			++k;
+				this->_index.push_back((*i));
 			++i;
 		}
 	}
+	std::cout << this->_index.size() << std::endl;
 }
 uint32_t geneset::size(void) const {
     return(this->_index.size());

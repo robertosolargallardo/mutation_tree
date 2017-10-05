@@ -11,7 +11,7 @@ class geneset {
 private:
     std::shared_ptr<node>              _root;
 	 std::vector<std::shared_ptr<node>>	_leafs;
-	 std::vector<uint32_t>              _index;
+	 std::vector<std::shared_ptr<node>> _index;
 
     uint32_t _population_size;
     uint32_t _locus_length;
@@ -28,9 +28,5 @@ public:
     uint32_t size(void) const;
 
 	 void save(const std::string&) const;
-
-	 void print(void) const{
-		 //for(auto leaf : this->_leafs) std::cout << leaf->references() << std::endl;
-	 }
 };
 #endif
