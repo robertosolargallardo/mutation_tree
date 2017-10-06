@@ -38,7 +38,7 @@ void pop::drift(void){
 	std::uniform_int_distribution<uint32_t> uniform(0U,this->_population_size-1);
 
 	/*TODO poner en una funcion*/
-	uint32_t mutations[this->_number_of_genes],number_of_mutations=0U;
+	uint32_t mutations_per_gene[this->_number_of_genes],number_of_mutations=0U;
 	uint32_t t=this->_population_size;
 
 	for(uint32_t i=0U;i<this->_number_of_genes;++i){
@@ -56,17 +56,17 @@ void pop::drift(void){
 			}
 		}
 		std::binomial_distribution<uint32_t> binomial(t,this->_pool[i].rate());
-		mutations[i]=binomial(rng);
-		number_of_mutations+=mutations[i];
+		mutations_per_gene[i]=binomial(rng);
+		number_of_mutations+=mutations_per_gene[i];
 	}
 	/*TODO poner en una funcion*/
 
-	uint32_t position=0U,k=0U,m=0U;
+	uint32_t id=0U,position=0U,mutations=0U;
 	for(uint32_t i=0U;i<this->_population_size;++i){
-		k=this->_index[uniform(rng)];
+		id=this->_index[uniform(rng)];
 
 		if(i<number_of_mutations){
-			individual mutant(this->_individuals[k]);
+			individual mutant(this->_individuals[id]);
 			mutant.references(0U);
 			std::shared_ptr<node> allele=std::make_shared<node>();
 			allele->parent(mutant.get(position));
@@ -78,14 +78,14 @@ void pop::drift(void){
 			this->_pool[position].insert(allele);
 			this->_individuals.push_back(mutant);
 			
-			++m;
-			if(m==mutations[position]){
+			++mutations;
+			if(mutations==mutations_per_gene[position]){
 				++position;
-				m=0U;
+				mutations=0U;
 			}
 		}
 		else
-			this->_individuals[k].increase();
+			this->_individuals[id].increase();
 	}
 	this->rebuild();
 }
