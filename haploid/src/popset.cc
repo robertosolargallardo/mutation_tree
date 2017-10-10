@@ -38,7 +38,7 @@ popset& popset::operator=(const popset &_ps){
 }
 popset::~popset(void){
 	for(uint32_t position=0U;position<this->_number_of_genes;++position)
-		(*this->_pool)[position].save("gene_"+std::to_string(position)+".json");
+		(*this->_pool)[position].save("output/gene_"+std::to_string(position)+".json");
 
 	this->_popset.clear();
 }
