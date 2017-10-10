@@ -21,13 +21,14 @@ public:
     void parent(std::shared_ptr<node>&);
     std::shared_ptr<node>& parent(void);
     void increase(void);
-    void clear(void);
     uint32_t references(void) const;
     void references(const uint32_t&);
     void mutate(const uint32_t&);
     void mutate(void);
     std::vector<std::shared_ptr<node>>& children(void);
     std::vector<uint32_t>& mutations(void);
+    uint32_t number_of_mutations(void) const;
+    void number_of_mutations(const uint32_t&);
 
     json serialize(void);
 };

@@ -29,8 +29,8 @@ individual::~individual(void){
 
 void individual::increase(void){
 	this->_references++;
-	for(uint32_t gid=0U;gid<this->_number_of_genes;++gid)
-		this->_genes[gid]->increase();
+	for(uint32_t position=0U;position<this->_number_of_genes;++position)
+		this->_genes[position]->increase();
 }
 void individual::references(const uint32_t &_references){
 	this->_references=_references;

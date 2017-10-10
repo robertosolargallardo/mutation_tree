@@ -6,19 +6,23 @@
 #include <individual.hh>
 
 class pop{
-	private: std::unique_ptr<gene[]> 	_pool;
+	private: std::shared_ptr<std::unique_ptr<gene[]>> 	_pool;
+
 				std::vector<individual> 	_individuals;
 				std::vector<uint32_t> 		_index;
 				uint32_t 						_population_size;
 				uint32_t							_number_of_genes;
+				uint32_t							_id;
 
 	public:	pop(void);
 				pop(const pop&);
-				pop(const uint32_t&,const json&);
 				pop& operator=(const pop&);
+				pop(const uint32_t&,const uint32_t&,const uint32_t&,const std::shared_ptr<std::unique_ptr<gene[]>>&);
 				~pop(void);
 
+				void flush(void);
 				void drift(void);
-				void rebuild(void);
+				std::tuple<uint32_t,uint32_t*> mutations(void);
+				uint32_t id(void) const;
 };
 #endif

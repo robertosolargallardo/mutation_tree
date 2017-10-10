@@ -39,14 +39,13 @@ void node::remove(std::shared_ptr<node> _node) {
                 this->parent()->remove(shared_from_this());
             else if(this->children().size()==1U) {
                 if(this->parent()) {
-                    //this->children().back()->mutations().insert(this->children().back()->mutations().begin(),this->mutations().begin(),this->mutations().end());
-                    this->children().back()->_number_of_mutations+=this->_number_of_mutations;
+                    this->children().back()->number_of_mutations(this->_number_of_mutations+this->children().back()->number_of_mutations());
                     this->parent()->child(this->children().back());
                     this->children().back()->parent(this->parent());
                     this->children().pop_back();
                     this->remove();
                 } else
-                    this->children().back()->_number_of_mutations=0U; //this->children().back()->mutations().clear();
+                    this->children().back()->_number_of_mutations=0U;
             }
         }
     }
@@ -74,11 +73,6 @@ std::shared_ptr<node>& node::parent(void) {
 void node::increase(void) {
     this->_references++;
 }
-void node::clear(void) {
-    this->_number_of_mutations=0U;
-    this->_references=0U;
-    this->_mutations.clear();
-}
 uint32_t node::references(void) const {
     return(this->_references);
 }
@@ -101,11 +95,17 @@ json node::serialize(void) {
     json document;
 
     document["references"]=this->references();
-    document["mutations"]=this->mutations();
+    document["mutations"]=this->number_of_mutations();
 
     if(!this->children().empty()) {
         for(auto child : this->children())
             document["children"].push_back(child->serialize());
     }
     return(document);
+}
+uint32_t node::number_of_mutations(void) const{
+	return(this->_number_of_mutations);
+}
+void node::number_of_mutations(const uint32_t &_number_of_mutations){
+	this->_number_of_mutations=_number_of_mutations
 }

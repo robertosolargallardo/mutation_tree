@@ -26,12 +26,14 @@ class gene{
 				double rate(void) const;
 				uint32_t length(void) const;
 				Type type(void) const;
-				allele get(const uint32_t&) const;
 
-				void create(const uint32_t&);
 				void insert(const allele&);
 				void contract(void);
-		
-				
+				void flush(void);
+
+				allele create(void);
+				allele random(void);
+	
+				void save(const std::string&) const;
 };
 #endif

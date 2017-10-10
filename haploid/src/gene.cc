@@ -2,7 +2,7 @@
 gene::gene(void){
 	this->_rate=0.0;
 	this->_length=0U;
-	this->_root=nullptr;
+	this->_root=std::make_shared<node>();
 	this->_type=UNKNOWN;
 }
 gene::gene(const gene &_g){
@@ -43,7 +43,6 @@ uint32_t gene::length(void) const{
 Type gene::type(void) const{
 	return(this->_type);
 }
-
 void gene::insert(const allele &_a){
 	this->_alleles.push_back(_a);
 }
@@ -53,20 +52,27 @@ void gene::contract(void){
 			(*i)->remove();
 			this->_alleles.erase(i);
 		}
-		else ++i;
+		else
+			++i;
 	}
-	for(auto& allele : this->_alleles) allele->references(0U);
 }
-allele gene::get(const uint32_t &_position) const{
-	return(this->_alleles[_position]);
+void gene::flush(void){
+	for(auto& i : this->_alleles) i->references(0U);
 }
-void gene::create(const uint32_t &_population_size){
-	this->_root=std::make_shared<node>();
-   this->_alleles.reserve(_population_size);
-
-   for(uint32_t i=0U;i<_population_size;++i){
-   	this->_alleles.push_back(std::make_shared<node>());
-      this->_alleles.back()->parent(this->_root);
-      this->_root->child(this->_alleles.back());
-   }
+allele gene::create(void){
+	this->_alleles.push_back(std::make_shared<node>());
+   this->_alleles.back()->parent(this->_root);
+   this->_alleles.back()->mutate();
+   this->_root->child(this->_alleles.back());
+	return(this->_alleles.back());
+}
+allele gene::random(void){
+	static thread_local std::mt19937 rng(time(0));
+   std::uniform_int_distribution<uint32_t> uniform(0U,this->_alleles.size()-1U);
+	return(this->_alleles[uniform(rng)]);
+}
+void gene::save(const std::string &_filename) const{
+	json document=this->_root->serialize();
+	std::ofstream output(_filename);
+   output << std::setw(4) << document << std::endl;
 }

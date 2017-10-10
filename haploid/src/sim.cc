@@ -1,5 +1,5 @@
 #include <glob.hh>
-#include <pop.hh>
+#include <popset.hh>
 
 int main(int argc,char** argv) {
     char c;
@@ -33,12 +33,17 @@ int main(int argc,char** argv) {
         std::cerr << "Mandatory parameter -g (number of generations) needed" << std::endl;
         exit(EXIT_FAILURE);
     }
-	 
-	 pop p(POPULATION_SIZE,PROFILE);
+	 popset ps(PROFILE);	 	
+	 uint32_t p1=ps.create(POPULATION_SIZE);
+	 uint32_t p2=ps.create(POPULATION_SIZE);
+
+    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; ++step) ps.drift();
+
+	 /*pop p(POPULATION_SIZE,PROFILE);
     for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; step++){
 		 std::cout << step << std::endl;
 		 p.drift();
-	 }
+	 }*/
 	
     /*geneset* gs=new geneset(POPULATION_SIZE,LOCUS_LENGTH,MUTATION_RATE);
 
