@@ -107,5 +107,5 @@ uint32_t node::number_of_mutations(void) const{
 	return(this->_number_of_mutations);
 }
 void node::number_of_mutations(const uint32_t &_number_of_mutations){
-	this->_number_of_mutations=_number_of_mutations
+	this->_number_of_mutations=_number_of_mutations;
 }
