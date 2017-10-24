@@ -109,3 +109,53 @@ uint32_t node::number_of_mutations(void) const{
 void node::number_of_mutations(const uint32_t &_number_of_mutations){
 	this->_number_of_mutations=_number_of_mutations;
 }
+void node::serialize(const std::string &_filename){
+   std::ofstream output;
+   output.open(_filename,std::ios::binary | std::ios::out);
+   this->serialize(output);
+   output.close();
+}
+void node::serialize(std::ofstream &_output){
+   size_t number_of_children=this->_children.size();
+   _output.write((char*)&number_of_children,sizeof(size_t));
+   _output.write((char*)&this->_references,sizeof(uint32_t));
+   _output.write((char*)&this->_number_of_mutations,sizeof(uint32_t));
+
+   if(this->_number_of_mutations==0U){
+      size_t length=this->_mutations.size();
+      _output.write((char*)&length,sizeof(uint32_t));
+      uint32_t *buffer=(uint32_t*)malloc(length*sizeof(uint32_t));
+      for(uint32_t i=0U;i<this->_mutations.size();i++)
+         buffer[i]=this->_mutations[i];
+      _output.write((char*)buffer,length*sizeof(uint32_t));
+      free(buffer);
+   }
+
+   for(auto& child : this->_children) child->serialize(_output);
+}
+void node::unserialize(const std::string &_filename){
+   std::ifstream input;
+   input.open(_filename,std::ios::binary | std::ios::in);
+   this->unserialize(input);
+   input.close();
+}
+void node::unserialize(std::ifstream &_input){
+   size_t number_of_children=0U;
+   _input.read((char*)&number_of_children,sizeof(size_t));
+   _input.read((char*)&this->_references,sizeof(uint32_t));
+   _input.read((char*)&this->_number_of_mutations,sizeof(size_t));
+
+   if(this->_number_of_mutations==0U){
+      size_t length=this->_mutations.size();
+      _input.read((char*)&length,sizeof(size_t));
+      uint32_t *buffer=(uint32_t*)malloc(length*sizeof(uint32_t));
+      _input.read((char*)buffer,length*sizeof(uint32_t));
+      this->_mutations.assign(buffer,buffer+length);
+      free(buffer);
+   }
+
+   for(uint32_t i=0U;i<number_of_children;i++){
+      this->_children.push_back(std::make_shared<node>());
+      this->_children.back()->unserialize(_input);
+   }
+}
