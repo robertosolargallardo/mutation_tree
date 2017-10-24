@@ -71,8 +71,6 @@ allele gene::random(void){
    std::uniform_int_distribution<uint32_t> uniform(0U,this->_alleles.size()-1U);
 	return(this->_alleles[uniform(rng)]);
 }
-void gene::save(const std::string &_filename) const{
-	json document=this->_root->serialize();
-	std::ofstream output(_filename);
-   output << std::setw(4) << document << std::endl;
+void gene::serialize(const std::string &_filename) const{
+   this->_root->serialize(_filename);
 }

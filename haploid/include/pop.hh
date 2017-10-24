@@ -24,5 +24,7 @@ class pop{
 				void drift(void);
 				std::tuple<uint32_t,uint32_t*> mutations(void);
 				uint32_t id(void) const;
+
+            void serialize(const std::string&);
 };
 #endif

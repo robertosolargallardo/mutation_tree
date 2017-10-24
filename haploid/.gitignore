@@ -1,2 +1,4 @@
 sim
+parallel
 obj/*
+output/*

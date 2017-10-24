@@ -17,5 +17,8 @@ class popset{
 
 				uint32_t create(const uint32_t&);
 				void drift(void);
+				void flush(void);
+
+            void serialize(const std::string&);
 };
 #endif

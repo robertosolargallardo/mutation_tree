@@ -33,7 +33,7 @@ class gene{
 
 				allele create(void);
 				allele random(void);
-	
-				void save(const std::string&) const;
+
+				void serialize(const std::string&) const;
 };
 #endif

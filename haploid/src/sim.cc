@@ -35,27 +35,12 @@ int main(int argc,char** argv) {
     }
 	 popset ps(PROFILE);	 	
 	 uint32_t p1=ps.create(POPULATION_SIZE);
-	 uint32_t p2=ps.create(POPULATION_SIZE);
 
-    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; ++step) ps.drift();
+    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; ++step) {
+      ps.drift();
+      if(step!=(NUMBER_OF_GENERATIONS-1U)) ps.flush();
+    }
 
-	 /*pop p(POPULATION_SIZE,PROFILE);
-    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; step++){
-		 std::cout << step << std::endl;
-		 p.drift();
-	 }*/
-	
-    /*geneset* gs=new geneset(POPULATION_SIZE,LOCUS_LENGTH,MUTATION_RATE);
-
-    std::chrono::steady_clock::time_point start,end;
-    start=std::chrono::steady_clock::now();
-    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; step++) gs->drift();
-
-	 gs->save("test.json");
-	 //gs->print();
-    end=std::chrono::steady_clock::now();
-    std::cout << (std::chrono::duration_cast<std::chrono::milliseconds>(end-start)).count() << std::endl;
-
-    delete gs;*/
+    ps.serialize("output");
     return(0);
 }

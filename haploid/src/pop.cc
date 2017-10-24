@@ -1,10 +1,12 @@
 #include <pop.hh>
 pop::pop(void){
+   this->_id=0U;
 	this->_pool=nullptr;
 	this->_population_size=0U;
 	this->_number_of_genes=0U;
 }
 pop::pop(const pop &_p){
+   this->_id=_p._id;
 	this->_pool=_p._pool;
 	this->_index=_p._index;
 	this->_individuals=_p._individuals;
@@ -12,6 +14,7 @@ pop::pop(const pop &_p){
 	this->_number_of_genes=_p._number_of_genes;
 }
 pop& pop::operator=(const pop &_p){
+   this->_id=_p._id;
 	this->_pool=_p._pool;
 	this->_index=_p._index;
 	this->_individuals=_p._individuals;
@@ -120,4 +123,11 @@ void pop::flush(void){
 			this->_index.push_back(i);
 		this->_individuals[i].references(0U);
 	}
+}
+void pop::serialize(const std::string &_filename){
+   for(uint32_t i=0U;i<this->_individuals.size();++i){
+      std::cout << i << " " << this->_individuals[i].references() << std::endl;
+      for(uint32_t j=0;j<this->_number_of_genes;++j)
+         std::cout << "\t" << this->_individuals[i].get(j)->references() << std::endl;
+   }
 }

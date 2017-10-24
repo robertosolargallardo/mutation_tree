@@ -31,4 +31,4 @@ obj/sim.o:src/sim.cc
 obj/parallel.o:src/parallel.cc 
 			 $(CXX) $< -c -o $@ $(CXXFLAGS) $(INCLUDE) -pthread
 clean:
-	  ${RM} $(OBJS) $(TARGET)
+	  ${RM} $(OBJS1) $(OBJS2) $(TARGET1) $(TARGET2) 
