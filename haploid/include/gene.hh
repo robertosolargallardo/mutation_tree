@@ -6,34 +6,37 @@
 typedef std::shared_ptr<node> allele;
 enum Type {SNP=0U,STR=1U,UNKNOWN};
 
-class gene{
-	private:	Type 			_type;
-				double 		_rate;
-				uint32_t 	_length;
+class gene
+{
+private:
+    Type 			_type;
+    double 		_rate;
+    uint32_t 	_length;
 
-				allele 				  _root;
-				std::vector<allele> _alleles;
+    allele 				  _root;
+    std::vector<allele> _alleles;
 
-	public:	gene(void);
-				gene(const gene&);
-				gene& operator=(const gene&);
-				~gene(void);
-		
-				void rate(const double&);
-				void length(const uint32_t&);
-				void type(const Type&);
+public:
+    gene(void);
+    gene(const gene&);
+    gene& operator=(const gene&);
+    ~gene(void);
 
-				double rate(void) const;
-				uint32_t length(void) const;
-				Type type(void) const;
+    void rate(const double&);
+    void length(const uint32_t&);
+    void type(const Type&);
 
-				void insert(const allele&);
-				void contract(void);
-				void flush(void);
+    double rate(void) const;
+    uint32_t length(void) const;
+    Type type(void) const;
 
-				allele create(void);
-				allele random(void);
+    void insert(const allele&);
+    void contract(void);
+    void flush(void);
 
-				void serialize(const std::string&) const;
+    allele create(void);
+    allele random(void);
+
+    void serialize(const std::string&) const;
 };
 #endif
