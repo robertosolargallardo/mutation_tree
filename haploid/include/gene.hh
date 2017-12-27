@@ -38,5 +38,7 @@ public:
     allele random(void);
 
     void serialize(const std::string&) const;
+
+	 json save(void);
 };
 #endif

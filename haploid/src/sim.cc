@@ -47,7 +47,7 @@ int main(int argc,char** argv)
             ps.drift();
             if(step!=(NUMBER_OF_GENERATIONS-1U)) ps.flush();
         }
-
-    ps.serialize("output");
+	
+    ps.save("trees");
     return(0);
 }

@@ -118,7 +118,7 @@ std::vector<uint32_t>& node::mutations(void)
 {
     return(this->_mutations);
 }
-json node::serialize(void)
+json node::save(void)
 {
     json document;
 
@@ -128,7 +128,7 @@ json node::serialize(void)
     if(!this->children().empty())
         {
             for(auto child : this->children())
-                document["children"].push_back(child->serialize());
+                document["children"].push_back(child->save());
         }
     return(document);
 }

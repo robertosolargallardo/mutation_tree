@@ -40,7 +40,7 @@ public:
     std::shared_ptr<node>& parent(void);
     void path(std::vector<uint32_t>&);
 
-    json serialize(void);
+    json save(void);
 
     void serialize(const std::string&);
     void unserialize(const std::string&);

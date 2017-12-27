@@ -60,6 +60,7 @@ void popset::drift(void)
 {
     for(auto& p : this->_popset)
         p.drift();
+
     for(uint32_t position=0U; position<this->_number_of_genes; ++position)
         (*this->_pool)[position].contract();
 }
@@ -70,6 +71,16 @@ void popset::flush(void)
 
     for(uint32_t position=0U; position<this->_number_of_genes; ++position)
         (*this->_pool)[position].flush();
+}
+void popset::save(const std::string &_directory){
+    for(uint32_t i=0; i<this->_number_of_genes; ++i)
+        {
+            std::string filename=_directory+"/"+"gene_"+std::to_string(i)+".json";
+            json document=(*this->_pool)[i].save();
+				std::ofstream output(filename);
+		 	   output << std::setw(4) << document << std::endl;
+        }
+
 }
 void popset::serialize(const std::string &_directory)
 {

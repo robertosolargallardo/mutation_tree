@@ -23,5 +23,6 @@ public:
     void flush(void);
 
     void serialize(const std::string&);
+	 void save(const std::string&);
 };
 #endif

@@ -13,8 +13,9 @@ private:
     std::vector<individual> 	_individuals;
     std::vector<uint32_t> 		_index;
     uint32_t 						_population_size;
-    uint32_t							_number_of_genes;
-    uint32_t							_id;
+    uint32_t						_number_of_genes;
+    uint32_t						_id;
+	 uint32_t                  _mutant;
 
 public:
     pop(void);

@@ -92,3 +92,6 @@ void gene::serialize(const std::string &_filename) const
 {
     this->_root->serialize(_filename);
 }
+json gene::save(void){
+	return(this->_root->save());
+}

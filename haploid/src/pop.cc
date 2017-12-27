@@ -5,6 +5,7 @@ pop::pop(void)
     this->_pool=nullptr;
     this->_population_size=0U;
     this->_number_of_genes=0U;
+	 this->_mutant=0U;
 }
 pop::pop(const pop &_p)
 {
@@ -14,6 +15,7 @@ pop::pop(const pop &_p)
     this->_individuals=_p._individuals;
     this->_population_size=_p._population_size;
     this->_number_of_genes=_p._number_of_genes;
+	 this->_mutant=_p._mutant;
 }
 pop& pop::operator=(const pop &_p)
 {
@@ -23,6 +25,7 @@ pop& pop::operator=(const pop &_p)
     this->_individuals=_p._individuals;
     this->_population_size=_p._population_size;
     this->_number_of_genes=_p._number_of_genes;
+	 this->_mutant=_p._mutant;
     return(*this);
 }
 pop::~pop(void)
@@ -36,6 +39,7 @@ pop::pop(const uint32_t &_id,const uint32_t &_population_size,const uint32_t &_n
     this->_pool=_pool;
     this->_population_size=_population_size;
     this->_number_of_genes=_number_of_genes;
+	 this->_mutant=_population_size;
 
     this->_index.reserve(this->_population_size);
     this->_individuals.reserve(this->_population_size);
@@ -96,25 +100,32 @@ void pop::drift(void)
 
     std::tie<uint32_t,uint32_t*>(number_of_mutations,mutations_per_gene)=this->mutations();
 
+	 std::chrono::steady_clock::time_point t1,t2;
+	 uint32_t ta=0U,tb=0U;
+
     uint32_t id=0U,position=0U,mutations=0U;
+
+    t1=std::chrono::steady_clock::now();
     for(uint32_t i=0U; i<this->_population_size; ++i)
         {
             id=this->_index[uniform(rng)];
 
             if(i<number_of_mutations)
                 {
-                    individual mutant(this->_individuals[id]);
-                    mutant.references(0U);
+						  if(this->_mutant>=this->_population_size) this->_individuals.push_back(individual(this->_individuals[id]));
+						  else this->_individuals[this->_mutant]=this->_individuals[id];
+
+						  this->_individuals[this->_mutant].references(0U);
                     std::shared_ptr<node> allele=std::make_shared<node>();
-                    allele->parent(mutant.get(position));
-                    mutant.get(position)->child(allele);
+                    allele->parent(this->_individuals[this->_mutant].get(position));
+                    this->_individuals[this->_mutant].get(position)->child(allele);
 
                     allele->mutate();
-                    mutant.set(position,allele);
-                    mutant.increase();
+                    this->_individuals[this->_mutant].set(position,allele);
+                    this->_individuals[this->_mutant].increase();
                     (*this->_pool)[position].insert(allele);
-                    this->_individuals.push_back(mutant);
 
+						  ++this->_mutant;
                     ++mutations;
                     if(mutations==mutations_per_gene[position])
                         {
@@ -125,20 +136,33 @@ void pop::drift(void)
             else
                 this->_individuals[id].increase();
         }
+    t2=std::chrono::steady_clock::now();
+    ta+=(std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1)).count();
+	 
+    t1=std::chrono::steady_clock::now();
+	 auto partition=std::partition(this->_individuals.begin(),this->_individuals.end(),[](const individual &i){return(i.references()!=0U);});
+	 this->_mutant=std::distance(this->_individuals.begin(),partition);
 
-    for(std::vector<individual>::iterator i=this->_individuals.begin(); i!=this->_individuals.end();)
-        {
-            if(i->references()==0U)
-                this->_individuals.erase(i);
-            else ++i;
-        }
+	 if(this->_individuals.size()>this->_population_size){
+       auto end=this->_individuals.begin();
+		 std::advance(end,this->_population_size);
+		 this->_individuals.erase(end,this->_individuals.end());
+	 }
+
+    t2=std::chrono::steady_clock::now();
+    tb+=(std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1)).count();
+
     delete[] mutations_per_gene;
+	
+	 std::cout << ta << " " << tb << " " << this->_mutant <<std::endl;
 }
 void pop::flush(void)
 {
     this->_index.clear();
     for(uint32_t i=0U; i<this->_individuals.size(); ++i)
         {
+				if(this->_individuals[i].references()==0U) break;
+
             for(uint32_t j=0U; j<this->_individuals[i].references(); ++j)
                 this->_index.push_back(i);
             this->_individuals[i].references(0U);
