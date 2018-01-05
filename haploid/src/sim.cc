@@ -48,6 +48,6 @@ int main(int argc,char** argv)
             if(step!=(NUMBER_OF_GENERATIONS-1U)) ps.flush();
         }
 	
-    ps.save("trees");
+    //ps.save("trees");
     return(0);
 }

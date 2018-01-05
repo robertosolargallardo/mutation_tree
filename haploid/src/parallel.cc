@@ -7,14 +7,18 @@
 void run(const uint32_t &POPULATION_SIZE,const uint32_t &NUMBER_OF_GENERATIONS,const json &PROFILE)
 {
 
-    popset ps(PROFILE);
-
     std::chrono::steady_clock::time_point start,end;
     start=std::chrono::steady_clock::now();
 
-    ps.create(POPULATION_SIZE);
+	 popset ps(PROFILE);
+    uint32_t p1=ps.create(POPULATION_SIZE);
 
-    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; ++step) ps.drift();
+    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; ++step)
+        {
+            ps.drift();
+            if(step!=(NUMBER_OF_GENERATIONS-1U)) ps.flush();
+        }
+
 
     end=std::chrono::steady_clock::now();
     std::cout << (std::chrono::duration_cast<std::chrono::milliseconds>(end-start)).count() << std::endl;
@@ -67,7 +71,6 @@ int main(int argc,char** argv)
             exit(EXIT_FAILURE);
         }
 
-
     for(uint32_t i=0U; i<NUMBER_OF_PROCESSES; ++i)
         {
             pid_t pid=fork();
@@ -93,5 +96,6 @@ int main(int argc,char** argv)
             int status=0;
             while((pid=wait(&status))>0);
         }
+
     return(0);
 }

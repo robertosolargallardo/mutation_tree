@@ -100,12 +100,8 @@ void pop::drift(void)
 
     std::tie<uint32_t,uint32_t*>(number_of_mutations,mutations_per_gene)=this->mutations();
 
-	 std::chrono::steady_clock::time_point t1,t2;
-	 uint32_t ta=0U,tb=0U;
-
     uint32_t id=0U,position=0U,mutations=0U;
 
-    t1=std::chrono::steady_clock::now();
     for(uint32_t i=0U; i<this->_population_size; ++i)
         {
             id=this->_index[uniform(rng)];
@@ -136,10 +132,6 @@ void pop::drift(void)
             else
                 this->_individuals[id].increase();
         }
-    t2=std::chrono::steady_clock::now();
-    ta+=(std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1)).count();
-	 
-    t1=std::chrono::steady_clock::now();
 	 auto partition=std::partition(this->_individuals.begin(),this->_individuals.end(),[](const individual &i){return(i.references()!=0U);});
 	 this->_mutant=std::distance(this->_individuals.begin(),partition);
 
@@ -149,12 +141,7 @@ void pop::drift(void)
 		 this->_individuals.erase(end,this->_individuals.end());
 	 }
 
-    t2=std::chrono::steady_clock::now();
-    tb+=(std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1)).count();
-
     delete[] mutations_per_gene;
-	
-	 std::cout << ta << " " << tb << " " << this->_mutant <<std::endl;
 }
 void pop::flush(void)
 {
