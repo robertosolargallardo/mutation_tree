@@ -1,19 +1,23 @@
 #include <glob.hh>
 #include <popset.hh>
 #include <evlist.hh>
-void recursive(const json &j){
-	std::cout << j.dump() << std::endl;
+void recursive(json &input){
 
-	for (json::iterator it = j.begin(); it != j.end(); ++it) {
-  		std::cout << it.key() << '\n';
+	for(auto& element : input){
+		if(element.is_object()){
+			if(element.count("type") && element["type"]=="random"){
+				std::cout << element <<std::endl;
+				element=1;
+			}
+			recursive(element);
+		}
+		else if(element.is_array()){
+			//std::cout << "array" << std::endl;
+			recursive(element);
+		}
+		else 
+			;//std::cout << element << std::endl;
 	}
-
-	//for(auto& element : input){
-		//if(element.is_object() || element.is_array()){
-		//	std::cout << "objecto" << std::endl;
-		//	recursive(element);
-		//}
-	//}
 }
 int main(int argc,char** argv) {
     char c;
@@ -81,6 +85,7 @@ int main(int argc,char** argv) {
     }
     ps.save("trees");*/
 	 recursive(PROFILE);
+    std::cout << PROFILE.dump() << std::endl;
     return(0);
 }
 
