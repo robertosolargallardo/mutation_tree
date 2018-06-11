@@ -1,0 +1,81 @@
+{
+	"id": 0,
+	"model": 0,
+	"events": [{
+		"id": 0,
+		"type": "create",
+		"timestamp": 0,
+		"params": {
+			"population": {
+				"name": "p0",
+				"size": 100000
+			}
+		}
+	}, {
+		"id": 1,
+		"type": "increment",
+		"timestamp": 25000,
+		"params": {
+			"source": {
+				"population": {
+					"name": "p0",
+					"percentage": 0.1
+				}
+			}
+		}
+	}, {
+		"id": 2,
+		"type": "split",
+		"timestamp": 50000,
+		"params": {
+			"source": {
+				"population": {
+					"name": "p0"
+				}
+			},
+			"partitions": 2,
+			"destination": [{
+				"population": {
+					"name": "p1"
+				}
+			}, {
+				"population": {
+					"name": "p2"
+				}
+			}]
+		}
+	}, {
+		"id": 3,
+		"type": "decrement",
+		"timestamp": 75000,
+		"params": {
+			"source": {
+				"population": {
+					"name": "p1",
+					"percentage": 0.1
+				}
+			}
+		}
+	}, {
+		"id": 4,
+		"type": "endsim",
+		"timestamp": 100000,
+		"params": {
+			"sampling": [{
+				"name": "sample1",
+				"source": {
+					"population": {
+						"name": "p1"
+					}
+				}
+			}, {
+				"name": "sample2",
+				"source": {
+					"population": {
+						"name": "p2"
+					}
+				}
+			}]
+		}
+	}]
+}

@@ -11,6 +11,7 @@
 #include <memory>
 #include <chrono>
 #include <mutex>
+#include <queue>
 #include <list>
 #include <set>
 using json=nlohmann::json;

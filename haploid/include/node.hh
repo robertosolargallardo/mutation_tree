@@ -1,9 +1,8 @@
 #ifndef _NODE_HH_
 #define _NODE_HH_
 #include <glob.hh>
-class node : public std::enable_shared_from_this<node>
-{
-private:
+class node : public std::enable_shared_from_this<node> {
+  private:
     std::shared_ptr<node>              _parent;
     std::vector<std::shared_ptr<node>> _children;
     uint32_t                           _references;
@@ -16,7 +15,7 @@ private:
     void serialize(std::ofstream&);
     void unserialize(std::ifstream&);
 
-public:
+  public:
     node(void);
     node(const node&);
     node& operator=(const node&);

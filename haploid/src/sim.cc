@@ -1,53 +1,86 @@
 #include <glob.hh>
 #include <popset.hh>
+#include <evlist.hh>
+void recursive(const json &j){
+	std::cout << j.dump() << std::endl;
 
-int main(int argc,char** argv)
-{
+	for (json::iterator it = j.begin(); it != j.end(); ++it) {
+  		std::cout << it.key() << '\n';
+	}
+
+	//for(auto& element : input){
+		//if(element.is_object() || element.is_array()){
+		//	std::cout << "objecto" << std::endl;
+		//	recursive(element);
+		//}
+	//}
+}
+int main(int argc,char** argv) {
     char c;
     extern char *optarg;
-    uint32_t POPULATION_SIZE=0U;
-    uint32_t NUMBER_OF_GENERATIONS=0U;
     json     PROFILE;
+    json     SCENARIO;
 
-    while((c=getopt(argc,argv,"p:g:s:"))!=-1)
-        {
-            switch (c)
-                {
-                case 'p':
-                    POPULATION_SIZE=std::stoul(optarg);
-                    break;
-                case 'g':
-                    NUMBER_OF_GENERATIONS=std::stoul(optarg);
-                    break;
-                case 's':
-                {
-                    std::ifstream finput(optarg);
-                    finput >> PROFILE;
-                    break;
-                }
-                default:
-                    exit(EXIT_FAILURE);
-                }
+    while((c=getopt(argc,argv,"p:s:"))!=-1) {
+        switch (c) {
+        case 'p': {
+            std::ifstream finput(optarg);
+            finput >> PROFILE;
+            break;
         }
-    if(POPULATION_SIZE==0U)
-        {
-            std::cerr << "Mandatory parameter -p (population size) needed" << std::endl;
+        case 's': {
+            std::ifstream finput(optarg);
+            finput >> SCENARIO;
+            break;
+        }
+        default:
             exit(EXIT_FAILURE);
         }
-    if(NUMBER_OF_GENERATIONS==0U)
-        {
-            std::cerr << "Mandatory parameter -g (number of generations) needed" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    popset ps(PROFILE);
-    uint32_t p1=ps.create(POPULATION_SIZE);
+    }
 
-    for(uint32_t step=0U; step<NUMBER_OF_GENERATIONS; ++step)
-        {
+    /*todo esto tiene q ir en una clase simulador*/
+    /*popset ps(PROFILE);
+    evlist evl(SCENARIO);
+    uint32_t lvt=0U;
+
+    while(!evl.empty()) {
+        std::shared_ptr<event> e=evl.top();
+
+        for(; lvt<e->timestamp(); ++lvt) {
             ps.drift();
-            if(step!=(NUMBER_OF_GENERATIONS-1U)) ps.flush();
+            if(!last(e)) ps.flush();
         }
-	
-    //ps.save("trees");
+
+        switch(e->type()) {
+        case CREATE: {
+            ps.create(e->params());
+            break;
+        }
+        case INCREMENT: {
+            ps.increment(e->params());
+            break;
+        }
+        case DECREMENT: {
+            ps.decrement(e->params());
+            break;
+        }
+        case SPLIT: {
+            ps.split(e->params());
+            break;
+        }
+        case ENDSIM: {
+            break;
+        }
+        default: {
+            std::cerr << "unknown event " << e->type() << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        }
+        evl.pop();
+    }
+    ps.save("trees");*/
+	 recursive(PROFILE);
     return(0);
 }
+

@@ -6,9 +6,8 @@
 typedef std::shared_ptr<node> allele;
 enum Type {SNP=0U,STR=1U,UNKNOWN};
 
-class gene
-{
-private:
+class gene {
+  private:
     Type 			_type;
     double 		_rate;
     uint32_t 	_length;
@@ -16,7 +15,7 @@ private:
     allele 				  _root;
     std::vector<allele> _alleles;
 
-public:
+  public:
     gene(void);
     gene(const gene&);
     gene& operator=(const gene&);
@@ -39,6 +38,6 @@ public:
 
     void serialize(const std::string&) const;
 
-	 json save(void);
+    json save(void);
 };
 #endif
