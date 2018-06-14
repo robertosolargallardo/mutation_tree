@@ -1,8 +1,9 @@
 #ifndef _NODE_HH_
 #define _NODE_HH_
 #include <glob.hh>
-class node : public std::enable_shared_from_this<node> {
-  private:
+class node : public std::enable_shared_from_this<node>
+{
+private:
     std::shared_ptr<node>              _parent;
     std::vector<std::shared_ptr<node>> _children;
     uint32_t                           _references;
@@ -15,7 +16,7 @@ class node : public std::enable_shared_from_this<node> {
     void serialize(std::ofstream&);
     void unserialize(std::ifstream&);
 
-  public:
+public:
     node(void);
     node(const node&);
     node& operator=(const node&);
@@ -36,13 +37,13 @@ class node : public std::enable_shared_from_this<node> {
     std::vector<uint32_t> mutations(void);
     uint32_t number_of_mutations(void) const;
     std::shared_ptr<node>& parent(void);
-	 void path(std::vector<uint32_t>&);
+    void path(std::vector<uint32_t>&);
 
     json save(void);
 
     void serialize(const std::string&);
     void unserialize(const std::string&);
 
-	 void snp(const uint32_t&);
+    void snp(const uint32_t&);
 };
 #endif

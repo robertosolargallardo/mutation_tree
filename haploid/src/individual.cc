@@ -1,21 +1,25 @@
 #include <individual.hh>
-individual::individual(void) {
+individual::individual(void)
+{
     this->_references=0U;
     this->_number_of_genes=0U;
 }
-individual::individual(const uint32_t &_number_of_genes) {
+individual::individual(const uint32_t &_number_of_genes)
+{
     this->_references=0U;
     this->_number_of_genes=_number_of_genes;
     this->_genes=std::make_unique<std::shared_ptr<node>[]>(this->_number_of_genes);
 }
-individual::individual(const individual &_i) {
+individual::individual(const individual &_i)
+{
     this->_references=_i._references;
     this->_number_of_genes=_i._number_of_genes;
     this->_genes=std::make_unique<std::shared_ptr<node>[]>(this->_number_of_genes);
     for(uint32_t i=0U; i<this->_number_of_genes; ++i)
         this->_genes[i]=_i._genes[i];
 }
-individual& individual::operator=(const individual &_i) {
+individual& individual::operator=(const individual &_i)
+{
     this->_references=_i._references;
     this->_number_of_genes=_i._number_of_genes;
     this->_genes=std::make_unique<std::shared_ptr<node>[]>(this->_number_of_genes);
@@ -23,25 +27,31 @@ individual& individual::operator=(const individual &_i) {
         this->_genes[i]=_i._genes[i];
     return(*this);
 }
-individual::~individual(void) {
+individual::~individual(void)
+{
     ;
 }
 
-void individual::increase(void) {
+void individual::increase(void)
+{
     this->_references++;
     for(uint32_t position=0U; position<this->_number_of_genes; ++position)
         this->_genes[position]->increase();
 }
-void individual::references(const uint32_t &_references) {
+void individual::references(const uint32_t &_references)
+{
     this->_references=_references;
 }
-void individual::set(const uint32_t &_position,const allele_t &_a) {
+void individual::set(const uint32_t &_position,const allele_t &_a)
+{
     this->_genes[_position]=_a;
 }
 
-allele_t& individual::get(const uint32_t &_position) const {
+allele_t& individual::get(const uint32_t &_position) const
+{
     return(this->_genes[_position]);
 }
-uint32_t individual::references(void) const {
+uint32_t individual::references(void) const
+{
     return(this->_references);
 }

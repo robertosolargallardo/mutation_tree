@@ -16,5 +16,5 @@
 #include <list>
 #include <set>
 using json=nlohmann::json;
-enum dist_t{UNIFORM=3830327609};
+enum dist_t {UNIFORM=3830327609};
 #endif

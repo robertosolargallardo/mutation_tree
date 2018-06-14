@@ -4,14 +4,15 @@
 #include <glob.hh>
 #include <statistics.hh>
 
-class popset {
-  private:
+class popset
+{
+private:
     std::shared_ptr<std::unique_ptr<gene[]>>	_pool;
 
     std::map<std::string,pop>  _popset;
     uint32_t                	 _number_of_genes;
 
-  public:
+public:
     popset(void);
     popset(const json&);
     popset(const popset&);
@@ -26,11 +27,11 @@ class popset {
     void drift(void);
     void flush(void);
 
-	 void mutate(void);
+    void mutate(void);
 
     void serialize(const std::string&);
     void save(const std::string&);
 
-	 void stats(const std::string&);
+    void stats(const std::string&);
 };
 #endif

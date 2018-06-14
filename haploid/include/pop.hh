@@ -5,8 +5,9 @@
 #include <gene.hh>
 #include <individual.hh>
 
-class pop {
-  private:
+class pop
+{
+private:
     std::shared_ptr<std::unique_ptr<gene[]>> 	_pool;
 
     std::vector<individual> 	_individuals;
@@ -16,7 +17,7 @@ class pop {
     uint32_t						_id;
     uint32_t                  _last;
 
-  public:
+public:
     pop(void);
     pop(const pop&);
     pop& operator=(const pop&);

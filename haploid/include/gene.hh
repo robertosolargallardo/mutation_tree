@@ -6,8 +6,9 @@
 typedef std::shared_ptr<node> allele_t;
 enum dna_t {SNP=0U,STR=1U,UNKNOWN};
 
-class gene {
-  private:
+class gene
+{
+private:
     dna_t      _type;
     double 		_rate;
     uint32_t 	_length;
@@ -15,7 +16,7 @@ class gene {
     allele_t 				  _root;
     std::vector<allele_t> _alleles;
 
-  public:
+public:
     gene(void);
     gene(const gene&);
     gene& operator=(const gene&);
@@ -32,7 +33,7 @@ class gene {
     void insert(const allele_t&);
     void contract(void);
     void flush(void);
-	 void mutate(void);
+    void mutate(void);
 
     allele_t create(void);
     allele_t random(void);
