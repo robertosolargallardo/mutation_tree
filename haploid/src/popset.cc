@@ -3,16 +3,16 @@ popset::popset(void) {
     this->_number_of_genes=0U;
 }
 popset::popset(const json &_profile) {
-    this->_number_of_genes=_profile["individual"]["genes"].size();
+    this->_number_of_genes=_profile["genes"].size();
     this->_pool=std::make_shared<std::unique_ptr<gene[]>>(std::make_unique<gene[]>(this->_number_of_genes));
 
     for(uint32_t gid=0U; gid<this->_number_of_genes; ++gid) {
-        (*this->_pool)[gid].type(_profile["individual"]["genes"][gid]["type"]);
-        (*this->_pool)[gid].rate(_profile["individual"]["genes"][gid]["mutation"]["rate"]);
+        (*this->_pool)[gid].type(_profile["genes"][gid]["type"]);
+        (*this->_pool)[gid].rate(_profile["genes"][gid]["mutation"]["rate"]);
 
         switch((*this->_pool)[gid].type()) {
         case SNP: {
-            (*this->_pool)[gid].length(_profile["individual"]["genes"][gid]["length"].get<uint32_t>());
+            (*this->_pool)[gid].length(_profile["genes"][gid]["length"].get<uint32_t>());
             break;
         }
         case STR: {
@@ -69,7 +69,6 @@ void popset::serialize(const std::string &_directory) {
         (*this->_pool)[i].serialize(filename);
     }
 
-
     std::ofstream output;
     std::string filename=_directory+"/"+"info.bin";
     output.open(filename,std::ios::binary | std::ios::out);
@@ -85,9 +84,7 @@ void popset::serialize(const std::string &_directory) {
     }
 }
 void popset::create(const json &_params) {
-    uint32_t population_size=_params["population"]["size"];
-    pop p(this->_popset.size(),population_size,this->_number_of_genes,this->_pool);
-    this->_popset[_params["population"]["name"]]=p;
+    this->_popset[_params["population"]["name"]]=pop(this->_popset.size(),_params["population"]["size"],this->_number_of_genes,this->_pool);
 }
 void popset::increment(const json &_params) {
     this->_popset[_params["source"]["population"]["name"]].increment(_params["source"]["population"]["percentage"]);
@@ -100,8 +97,42 @@ void popset::split(const json &_params) {
 
     for(size_t i=0; i<populations.size(); ++i)
         this->_popset[_params["destination"][i]["population"]["name"]]=populations[i];
-
     populations.clear();
+
     this->_popset.erase(this->_popset.find(_params["source"]["population"]["name"]));
 }
+void popset::stats(const std::string &_directory){
+	json fstats=json::array();
 
+	std::map<std::string,std::vector<individual>> samples;
+	std::vector<individual> summary;
+
+	for(auto& p : this->_popset) {
+		samples[p.first]=p.second.sample();
+		
+		if(this->_popset.size()>1) summary.insert(summary.end(),samples[p.first].begin(),samples[p.first].end());
+   }
+	if(this->_popset.size()>1) samples["summary"]=summary;
+	
+	for(auto& sample : samples){
+		for(uint32_t position=0U;position<this->_number_of_genes;++position){
+			std::map<uint64_t,std::tuple<std::vector<uint32_t>,int>> alleles;
+
+			for(auto& i : sample.second){
+				allele_t allele=i.get(position);
+				if(alleles.count(allele->id())==0)
+					alleles[allele->id()]=std::tuple<std::vector<uint32_t>,int>(allele->mutations(),1);
+				else
+					std::get<1>(alleles[allele->id()])++;
+			}
+			fstats.push_back({"population",{{"name",sample.first},{"statistics",statistics::stats(alleles)}}});
+		}
+	}
+	std::ofstream output(_directory+"/stats.json");
+   output << std::setw(4) << fstats << std::endl;
+	output.close();
+}
+void popset::mutate(void){
+    for(uint32_t position=0U; position<this->_number_of_genes; ++position)
+        (*this->_pool)[position].mutate();
+}

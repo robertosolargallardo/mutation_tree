@@ -105,7 +105,7 @@ void pop::drift(void) {
             else this->_individuals[this->_last]=this->_individuals[id];
 
             this->_individuals[this->_last].references(0U);
-            std::shared_ptr<node> allele=std::make_shared<node>();
+            allele_t allele=std::make_shared<node>();
             allele->parent(this->_individuals[this->_last].get(position));
             this->_individuals[this->_last].get(position)->child(allele);
 
@@ -123,9 +123,7 @@ void pop::drift(void) {
         } else
             this->_individuals[id].increase();
     }
-    auto partition=std::partition(this->_individuals.begin(),this->_individuals.end(),[](const individual &i) {
-        return(i.references()!=0U);
-    });
+    auto partition=std::partition(this->_individuals.begin(),this->_individuals.end(),[](const individual &i) { return(i.references()!=0U); });
     this->_last=std::distance(this->_individuals.begin(),partition);
 
     if(this->_individuals.size()>this->_population_size) {
@@ -159,31 +157,7 @@ void pop::rebuild(void) {
         prev=i;
         i=current-diff;
     }
-}
-void pop::serialize(const std::string &_directory) {
-    std::ofstream output;
-    size_t number_of_individuals=this->_individuals.size();
-    uint32_t references=0U;
-    std::string filename=_directory+"/"+"pop_"+std::to_string(this->id())+".bin";
-
-    output.open(filename,std::ios::binary | std::ios::out);
-    output.write((char*)&number_of_individuals,sizeof(size_t));
-    output.write((char*)&this->_number_of_genes,sizeof(uint32_t));
-
-    for(uint32_t i=0U; i<this->_individuals.size(); ++i) {
-        references=this->_individuals[i].references();
-        output.write((char*)&references,sizeof(uint32_t));
-        for(uint32_t gid=0; gid<this->_number_of_genes; ++gid) {
-            std::vector<uint32_t> path;
-            this->_individuals[i].get(gid)->path(path);
-
-            output.write((char*)&gid,sizeof(uint32_t));
-            uint32_t number_of_levels=path.size();
-            output.write((char*)&number_of_levels,sizeof(size_t));
-            for(auto nid : path) output.write((char*)&nid,sizeof(uint32_t));
-        }
-    }
-    output.close();
+    this->_last=*this->_index.rbegin();
 }
 void pop::increment(const double &_percentage) {
     uint32_t _increment=uint32_t(double(this->_population_size)*_percentage);
@@ -191,12 +165,14 @@ void pop::increment(const double &_percentage) {
     this->_index.reserve(this->_population_size+_increment);
     this->_individuals.reserve(this->_population_size+_increment);
 
+	 std::vector<individual>::iterator it=this->_individuals.begin();
+    std::advance(it,this->_last);
     for(uint32_t i=0U; i<_increment; ++i) {
         individual offspring(this->_number_of_genes);
         for(uint32_t position=0U; position<this->_number_of_genes; ++position)
             offspring.set(position,(*this->_pool)[position].random());
-        this->_individuals.push_back(offspring);
-        this->_index.push_back(this->_population_size+i);
+		  this->_individuals.insert(it++,offspring);
+        this->_index.push_back(this->_last++);
     }
 
     this->_population_size+=_increment;
@@ -219,7 +195,6 @@ void pop::decrement(const double &_percentage) {
     for(size_t i=0; i<uniq.size(); ++i)
         individuals[i]=this->_individuals[uniq[i]];
 
-    this->_last=individuals.size();
     this->_individuals=individuals;
     this->_population_size-=_decrement;
 
@@ -255,4 +230,40 @@ std::vector<pop> pop::split(const uint32_t &_partitions) {
         populations.push_back(p);
     }
     return(populations);
+}
+std::vector<individual> pop::sample(void){
+   static thread_local std::mt19937 rng(time(0));
+
+	std::vector<individual> individuals;
+   std::shuffle(this->_index.begin(),this->_index.end(),rng);
+
+	for(uint32_t i=0U;i<uint32_t(this->_index.size()*0.05);++i)
+		individuals.push_back(this->_individuals[this->_index[i]]);
+
+	return(individuals);
+}
+void pop::serialize(const std::string &_directory) {
+    std::ofstream output;
+    size_t number_of_individuals=this->_individuals.size();
+    uint32_t references=0U;
+    std::string filename=_directory+"/"+"pop_"+std::to_string(this->id())+".bin";
+
+    output.open(filename,std::ios::binary | std::ios::out);
+    output.write((char*)&number_of_individuals,sizeof(size_t));
+    output.write((char*)&this->_number_of_genes,sizeof(uint32_t));
+
+    for(uint32_t i=0U; i<this->_individuals.size(); ++i) {
+        references=this->_individuals[i].references();
+        output.write((char*)&references,sizeof(uint32_t));
+        for(uint32_t gid=0; gid<this->_number_of_genes; ++gid) {
+            std::vector<uint32_t> path;
+            this->_individuals[i].get(gid)->path(path);
+
+            output.write((char*)&gid,sizeof(uint32_t));
+            uint32_t number_of_levels=path.size();
+            output.write((char*)&number_of_levels,sizeof(size_t));
+            for(auto nid : path) output.write((char*)&nid,sizeof(uint32_t));
+        }
+    }
+    output.close();
 }

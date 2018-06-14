@@ -30,7 +30,7 @@ void gene::rate(const double &_rate) {
 void gene::length(const uint32_t &_length) {
     this->_length=_length;
 }
-void gene::type(const Type &_type) {
+void gene::type(const dna_t &_type) {
     this->_type=_type;
 }
 
@@ -40,10 +40,10 @@ double gene::rate(void) const {
 uint32_t gene::length(void) const {
     return(this->_length);
 }
-Type gene::type(void) const {
+dna_t gene::type(void) const {
     return(this->_type);
 }
-void gene::insert(const allele &_a) {
+void gene::insert(const allele_t &_a) {
     this->_alleles.push_back(_a);
 }
 void gene::contract(void) {
@@ -58,14 +58,14 @@ void gene::contract(void) {
 void gene::flush(void) {
     for(auto& i : this->_alleles) i->references(0U);
 }
-allele gene::create(void) {
+allele_t gene::create(void) {
     this->_alleles.push_back(std::make_shared<node>());
     this->_alleles.back()->parent(this->_root);
     this->_alleles.back()->mutate();
     this->_root->child(this->_alleles.back());
     return(this->_alleles.back());
 }
-allele gene::random(void) {
+allele_t gene::random(void) {
     static thread_local std::mt19937 rng(time(0));
     std::uniform_int_distribution<uint32_t> uniform(0U,this->_alleles.size()-1U);
     return(this->_alleles[uniform(rng)]);
@@ -75,4 +75,19 @@ void gene::serialize(const std::string &_filename) const {
 }
 json gene::save(void) {
     return(this->_root->save());
+}
+void gene::mutate(void){
+	switch(this->type()){
+		case SNP:{
+						this->_root->snp(this->_length);
+						break;
+					}
+		case STR:{
+						break;
+					}
+		default:{
+			std::cerr << "Error::unknown dna type " << this->_type << std::endl; 
+			exit(EXIT_FAILURE);
+		}
+	}
 }

@@ -22,8 +22,8 @@ class evlist {
     evlist& operator=(const evlist &_evlist);
 
     std::shared_ptr<event> top(void);
-    void 	pop(void);
-    bool 	empty(void);
+    void 	 pop(void);
+    bool 	 empty(void);
     uint32_t lvt(void);
 
     ~evlist(void);

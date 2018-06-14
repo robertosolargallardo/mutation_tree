@@ -11,8 +11,10 @@
 #include <memory>
 #include <chrono>
 #include <mutex>
+#include <regex>
 #include <queue>
 #include <list>
 #include <set>
 using json=nlohmann::json;
+enum dist_t{UNIFORM=3830327609};
 #endif

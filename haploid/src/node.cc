@@ -3,7 +3,7 @@ node::node(void) {
     this->_parent=nullptr;
     this->_number_of_mutations=0U;
     this->_references=0U;
-    this->_id=0U;
+    this->_id=(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
 }
 node::node(const node &_node) {
     this->_id=_node._id;
@@ -28,7 +28,6 @@ node::~node(void) {
     this->_children.clear();
 }
 void node::child(std::shared_ptr<node> &_node) {
-    _node->id(this->_children.empty()?0U:(*this->_children.rbegin())->id()+1U);
     this->_children.push_back(_node);
 }
 void node::remove(std::shared_ptr<node> _node) {
@@ -82,21 +81,26 @@ uint32_t node::references(void) const {
 void node::references(const uint32_t &_references) {
     this->_references=_references;
 }
-void node::mutate(const uint32_t &_mutation) {
-    this->_mutations.push_back(_mutation);
-}
 void node::mutate(void) {
     this->_number_of_mutations++;
 }
 std::vector<std::shared_ptr<node>>& node::children(void) {
     return(this->_children);
 }
-std::vector<uint32_t>& node::mutations(void) {
-    return(this->_mutations);
+std::vector<uint32_t> node::mutations(void) {
+
+	if(this->parent()!=nullptr){
+		std::vector<uint32_t> m=this->_mutations;
+		std::vector<uint32_t> n=this->parent()->mutations();
+		m.insert(m.end(),n.begin(),n.end());
+		return(m);
+	}
+	else return(this->_mutations);
 }
 json node::save(void) {
     json document;
 
+    document["id"]=this->id();
     document["references"]=this->references();
     document["mutations"]=this->number_of_mutations();
 
@@ -164,12 +168,24 @@ void node::unserialize(std::ifstream &_input) {
         this->_children.back()->unserialize(_input);
     }
 }
-void node::id(const uint32_t &_id) {
+void node::id(const uint64_t &_id) {
     this->_id=_id;
 }
 
-uint32_t node::id(void) const {
+uint64_t node::id(void) const {
     return(this->_id);
+}
+void node::snp(const uint32_t &_length){
+	static thread_local std::mt19937 rng(time(0));
+	std::uniform_int_distribution<uint32_t> uniform(0U,_length-1U);
+
+	for(uint32_t i=0;i<this->_number_of_mutations;++i)
+    	this->_mutations.push_back(uniform(rng));
+
+   for(auto& child : this->children())
+		child->snp(_length);
+	
+	std::sort(this->_mutations.begin(),this->_mutations.end());
 }
 void node::path(std::vector<uint32_t> &_path) {
     _path.insert(_path.begin(),this->id());

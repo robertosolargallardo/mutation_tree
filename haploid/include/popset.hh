@@ -2,6 +2,7 @@
 #define _POPSET_HH_
 #include <pop.hh>
 #include <glob.hh>
+#include <statistics.hh>
 
 class popset {
   private:
@@ -25,7 +26,11 @@ class popset {
     void drift(void);
     void flush(void);
 
+	 void mutate(void);
+
     void serialize(const std::string&);
     void save(const std::string&);
+
+	 void stats(const std::string&);
 };
 #endif

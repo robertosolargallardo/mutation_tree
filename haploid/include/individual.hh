@@ -6,7 +6,7 @@ class individual {
   private:
     uint32_t _references;
     uint32_t _number_of_genes;
-    std::unique_ptr<allele[]> _genes;
+    std::unique_ptr<allele_t[]> _genes;
 
   public:
     individual(void);
@@ -17,9 +17,9 @@ class individual {
 
     void increase(void);
     void references(const uint32_t&);
-    void set(const uint32_t&,const allele&);
+    void set(const uint32_t&,const allele_t&);
 
-    allele& get(const uint32_t&) const;
+    allele_t& get(const uint32_t&) const;
     uint32_t references(void) const;
 
 };

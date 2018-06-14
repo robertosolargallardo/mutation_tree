@@ -32,6 +32,7 @@ class pop {
     void flush(void);
     void drift(void);
     void rebuild(void);
+    std::vector<individual> sample(void);
 
     std::tuple<uint32_t,uint32_t*> mutations(void);
     uint32_t id(void) const;

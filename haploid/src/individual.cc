@@ -35,11 +35,11 @@ void individual::increase(void) {
 void individual::references(const uint32_t &_references) {
     this->_references=_references;
 }
-void individual::set(const uint32_t &_position,const allele &_a) {
+void individual::set(const uint32_t &_position,const allele_t &_a) {
     this->_genes[_position]=_a;
 }
 
-allele& individual::get(const uint32_t &_position) const {
+allele_t& individual::get(const uint32_t &_position) const {
     return(this->_genes[_position]);
 }
 uint32_t individual::references(void) const {

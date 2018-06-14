@@ -3,17 +3,17 @@
 #include <glob.hh>
 #include <node.hh>
 
-typedef std::shared_ptr<node> allele;
-enum Type {SNP=0U,STR=1U,UNKNOWN};
+typedef std::shared_ptr<node> allele_t;
+enum dna_t {SNP=0U,STR=1U,UNKNOWN};
 
 class gene {
   private:
-    Type 			_type;
+    dna_t      _type;
     double 		_rate;
     uint32_t 	_length;
 
-    allele 				  _root;
-    std::vector<allele> _alleles;
+    allele_t 				  _root;
+    std::vector<allele_t> _alleles;
 
   public:
     gene(void);
@@ -23,18 +23,19 @@ class gene {
 
     void rate(const double&);
     void length(const uint32_t&);
-    void type(const Type&);
+    void type(const dna_t&);
 
     double rate(void) const;
     uint32_t length(void) const;
-    Type type(void) const;
+    dna_t type(void) const;
 
-    void insert(const allele&);
+    void insert(const allele_t&);
     void contract(void);
     void flush(void);
+	 void mutate(void);
 
-    allele create(void);
-    allele random(void);
+    allele_t create(void);
+    allele_t random(void);
 
     void serialize(const std::string&) const;
 
