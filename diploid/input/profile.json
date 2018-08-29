@@ -1,0 +1,13 @@
+{
+   "individual": {
+      "ploidy": "1",
+      "genes": [{
+         "type" : 0,
+         "length" : 663,
+         "mutation" : {
+            "rate" : 0.0000001,
+            "model" : 0
+          }
+      }]
+   }
+}

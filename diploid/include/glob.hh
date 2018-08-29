@@ -1,7 +1,7 @@
 #ifndef _GLOB_HH_
 #define _GLOB_HH_
-#include <unordered_set>
 #include <algorithm>
+#include <armadillo>
 #include <unistd.h>
 #include <json.hpp>
 #include <iostream>
@@ -11,6 +11,10 @@
 #include <memory>
 #include <chrono>
 #include <mutex>
+#include <regex>
+#include <queue>
+#include <list>
 #include <set>
 using json=nlohmann::json;
+enum dist_t {UNIFORM=3830327609};
 #endif
