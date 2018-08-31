@@ -10,7 +10,11 @@ private:
     uint64_t                           _id;
 
     uint32_t									_number_of_mutations;
-    std::vector<uint32_t>              _mutations;
+
+	 union{
+        std::vector<uint32_t>              _point_mutations;
+        uint32_t                           _repeats;
+    };
 
     void remove(std::shared_ptr<node>);
     void serialize(std::ofstream&);
@@ -34,7 +38,6 @@ public:
     uint64_t id(void) const;
     uint32_t references(void) const;
     std::vector<std::shared_ptr<node>>& children(void);
-    std::vector<uint32_t> mutations(void);
     uint32_t number_of_mutations(void) const;
     std::shared_ptr<node>& parent(void);
     void path(std::vector<uint32_t>&);
@@ -45,5 +48,9 @@ public:
     void unserialize(const std::string&);
 
     void snp(const uint32_t&);
+    void srt(void);
+
+    std::vector<uint32_t> point_mutations(void);
+    uint32_t repeats(void);
 };
 #endif

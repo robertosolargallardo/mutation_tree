@@ -90,24 +90,33 @@ void pop::drift(void)
 {
     static thread_local std::mt19937 rng(time(0));
     std::uniform_int_distribution<uint32_t> uniform(0U,this->_population_size-1U);
-    std::uniform_int_distribution<uint32_t> coin(0U,1U);
+    std::uniform_int_distribution<int> coin(0,1);
 
     uint32_t number_of_mutations=0U;
     uint32_t *mutations_per_gene=nullptr;
 
     std::tie<uint32_t,uint32_t*>(number_of_mutations,mutations_per_gene)=this->mutations();
 
-    uint32_t p1=0U,p2=0U,mutations=0U,position=0U;
+    uint32_t mutations=0U,position=0U;
+
+    uint32_t pa=0U,pb=0U;
+
+	 std::vector<uint32_t> rnd(this->_population_size*N_CHROMOSOMES);
+    std::generate(rnd.begin(),rnd.end(),[&uniform](void)->uint32_t{return(uniform(rng));});
 
     for(uint32_t i=0U; i<this->_population_size; ++i)
         {
-            p1=uniform(rng); 
-            p2=uniform(rng); 
+				auto start=std::chrono::system_clock::now();
+
             for(uint32_t position=0U; position<this->_number_of_genes; ++position)
-                this->_dst[i].set(position,this->_src[p1].get(position)[coin(rng)],this->_src[p2].get(position)[coin(rng)]);
+                this->_dst[i].set(position,this->_src[rnd[N_CHROMOSOMES*i]].get(position)[coin(rng)],this->_src[rnd[N_CHROMOSOMES*i+1]].get(position)[coin(rng)]);
+
+				auto end=std::chrono::system_clock::now();
+				pa+=(end-start).count();
            
+				start=std::chrono::system_clock::now();
             if(i<number_of_mutations){
-               uint32_t chromosome=coin(rng);
+               int chromosome=coin(rng);
 					allele_t allele=std::make_shared<node>();
                std::array<allele_t,N_CHROMOSOMES> alleles=this->_dst[i].get(position);
                allele->parent(alleles[chromosome]);
@@ -123,22 +132,15 @@ void pop::drift(void)
                    mutations=0U;
                }
 				}
+
+				end=std::chrono::system_clock::now();
+				pb+=(end-start).count();
+
 				this->_dst[i].increase();
         }
+    std::cout << pa << " " << pb << std::endl;
 	 std::swap(this->_src,this->_dst);
     delete[] mutations_per_gene;
-}
-void pop::flush(void)
-{
-    /*this->_index.clear();
-    for(uint32_t i=0U; i<this->_individuals.size(); ++i)
-        {
-            if(this->_individuals[i].references()==0U) break;
-
-            for(uint32_t j=0U; j<this->_individuals[i].references(); ++j)
-                this->_index.push_back(i);
-            this->_individuals[i].references(0U);
-        }*/
 }
 /*void pop::rebuild(void)
 {
@@ -235,19 +237,19 @@ std::vector<pop> pop::split(const uint32_t &_partitions)
             populations.push_back(p);
         }
     return(populations);
-}
+}*/
 std::vector<individual> pop::sample(void)
 {
     static thread_local std::mt19937 rng(time(0));
+    std::uniform_int_distribution<uint32_t> uniform(0U,this->_population_size-1U);
 
     std::vector<individual> individuals;
-    std::shuffle(this->_index.begin(),this->_index.end(),rng);
 
-    for(uint32_t i=0U; i<uint32_t(this->_index.size()*0.05); ++i)
-        individuals.push_back(this->_individuals[this->_index[i]]);
+    for(uint32_t i=0U; i<uint32_t(double(this->_population_size)*0.05); ++i)
+        individuals.push_back(this->_src[uniform(rng)]);
 
     return(individuals);
-}*/
+}
 void pop::serialize(const std::string &_directory)
 {
     /*std::ofstream output;

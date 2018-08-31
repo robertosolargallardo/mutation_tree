@@ -29,7 +29,6 @@ public:
     void decrement(const double&);
     std::vector<pop> split(const uint32_t&);
 
-    void flush(void);
     void drift(void);
     void rebuild(void);
     std::vector<individual> sample(void);

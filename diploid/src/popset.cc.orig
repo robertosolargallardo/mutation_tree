@@ -138,41 +138,37 @@ void popset::stats(const std::string &_directory)
         {
             for(uint32_t position=0U; position<this->_number_of_genes; ++position)
                 {
-                    switch((*this->_pool)[position].type())
-                        {
-                        case SNP:
-                        {
-                            break;
-                        }
-                        case STR:
-                        {
-                            std::map<uint64_t,std::tuple<uint32_t,int>> alleles;
-                            for(auto& i : sample.second){
-                                std::array<allele_t,N_CHROMOSOMES> allele=i.get(position);
-	                             std::cout << allele[0]->repeats() << std::endl;
-	                             std::cout << allele[1]->repeats() << std::endl;
-                            }
-                            break;
-                        }
-                        default:
-                        {
-                            std::cerr << "error::unknown marker type: " << (*this->_pool)[position].type() << std::endl;
-                            exit(EXIT_FAILURE);
-                        }
-                        }
+                     switch((*this->_pool)[gid].type())
+                {
+                case SNP:
+                {
+                    (*this->_pool)[gid].length(_profile["genes"][gid]["length"].get<uint32_t>());
+                    break;
+                }
+                case STR:
+                {
+                    (*this->_pool)[gid].length(0U);
+                    break;
+                }
+                default:
+                {
+                    std::cerr << "error::unknown marker type: " << (*this->_pool)[gid].type() << std::endl;
+                    exit(EXIT_FAILURE);
+                }
+                }
 
-                    /*                  std::map<uint64_t,std::tuple<std::vector<uint32_t>,int>> alleles;
+/*                    std::map<uint64_t,std::tuple<std::vector<uint32_t>,int>> alleles;
 
-                                        for(auto& i : sample.second)
-                                            {
-                                                std::array<allele_t,N_CHROMOSOMES> allele=i.get(position);
-                                                if(alleles.count(allele[0]->id())==0) alleles[allele[0]->id()]=std::tuple<std::vector<uint32_t>,int>(allele[0]->mutations(),1);
-                                                else std::get<1>(alleles[allele[0]->id()])++;
+                    for(auto& i : sample.second)
+                        {
+                            std::array<allele_t,N_CHROMOSOMES> allele=i.get(position);
+                            if(alleles.count(allele[0]->id())==0) alleles[allele[0]->id()]=std::tuple<std::vector<uint32_t>,int>(allele[0]->mutations(),1);
+                            else std::get<1>(alleles[allele[0]->id()])++;
+                             
+                            if(alleles.count(allele[1]->id())==0) alleles[allele[1]->id()]=std::tuple<std::vector<uint32_t>,int>(allele[1]->mutations(),1);
+                            else std::get<1>(alleles[allele[1]->id()])++;
 
-                                                if(alleles.count(allele[1]->id())==0) alleles[allele[1]->id()]=std::tuple<std::vector<uint32_t>,int>(allele[1]->mutations(),1);
-                                                else std::get<1>(alleles[allele[1]->id()])++;
-
-                                            }*/
+                        }*/
                     //fstats.push_back({"population",{{"name",sample.first},{"statistics",statistics::stats(alleles)}}});
                 }
         }

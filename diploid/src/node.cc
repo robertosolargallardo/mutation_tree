@@ -4,6 +4,7 @@ node::node(void)
     this->_parent=nullptr;
     this->_number_of_mutations=0U;
     this->_references=0U;
+    this->_repeats=0U;
     this->_id=(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
 }
 node::node(const node &_node)
@@ -12,7 +13,8 @@ node::node(const node &_node)
     this->_references=_node._references;
     this->_parent=_node._parent;
     this->_children=_node._children;
-    this->_mutations=_node._mutations;
+    this->_repeats=_node._repeats;
+    this->_point_mutations=_node._point_mutations;
     this->_number_of_mutations=_node._number_of_mutations;
 }
 node& node::operator=(const node &_node)
@@ -21,14 +23,15 @@ node& node::operator=(const node &_node)
     this->_references=_node._references;
     this->_parent=_node._parent;
     this->_children=_node._children;
-    this->_mutations=_node._mutations;
+    this->_repeats=_node._repeats;
+    this->_point_mutations=_node._point_mutations;
     this->_number_of_mutations=_node._number_of_mutations;
     return(*this);
 }
 node::~node(void)
 {
     this->_parent=nullptr;
-    this->_mutations.clear();
+    this->_point_mutations.clear();
     this->_children.clear();
 }
 void node::child(std::shared_ptr<node> &_node)
@@ -109,18 +112,7 @@ std::vector<std::shared_ptr<node>>& node::children(void)
 {
     return(this->_children);
 }
-std::vector<uint32_t> node::mutations(void)
-{
 
-    if(this->parent()!=nullptr)
-        {
-            std::vector<uint32_t> m=this->_mutations;
-            std::vector<uint32_t> n=this->parent()->mutations();
-            m.insert(m.end(),n.begin(),n.end());
-            return(m);
-        }
-    else return(this->_mutations);
-}
 json node::save(void)
 {
     json document;
@@ -161,11 +153,11 @@ void node::serialize(std::ofstream &_output)
 
     if(this->_number_of_mutations==0U)
         {
-            size_t length=this->_mutations.size();
+            size_t length=this->_point_mutations.size();
             _output.write((char*)&length,sizeof(uint32_t));
             uint32_t *buffer=(uint32_t*)malloc(length*sizeof(uint32_t));
-            for(uint32_t i=0U; i<this->_mutations.size(); i++)
-                buffer[i]=this->_mutations[i];
+            for(uint32_t i=0U; i<this->_point_mutations.size(); i++)
+                buffer[i]=this->_point_mutations[i];
             _output.write((char*)buffer,length*sizeof(uint32_t));
             free(buffer);
         }
@@ -189,11 +181,11 @@ void node::unserialize(std::ifstream &_input)
 
     if(this->_number_of_mutations==0U)
         {
-            size_t length=this->_mutations.size();
+            size_t length=this->_point_mutations.size();
             _input.read((char*)&length,sizeof(size_t));
             uint32_t *buffer=(uint32_t*)malloc(length*sizeof(uint32_t));
             _input.read((char*)buffer,length*sizeof(uint32_t));
-            this->_mutations.assign(buffer,buffer+length);
+            this->_point_mutations.assign(buffer,buffer+length);
             free(buffer);
         }
 
@@ -212,21 +204,47 @@ uint64_t node::id(void) const
 {
     return(this->_id);
 }
+void node::srt(void){
+    static thread_local std::mt19937 rng(time(0));
+    std::binomial_distribution<uint32_t> binomial(this->_number_of_mutations,0.5);
+
+    this->_repeats=binomial(rng);
+
+    for(auto& child : this->children())
+        child->srt();
+}
 void node::snp(const uint32_t &_length)
 {
     static thread_local std::mt19937 rng(time(0));
     std::uniform_int_distribution<uint32_t> uniform(0U,_length-1U);
 
     for(uint32_t i=0; i<this->_number_of_mutations; ++i)
-        this->_mutations.push_back(uniform(rng));
+        this->_point_mutations.push_back(uniform(rng));
 
     for(auto& child : this->children())
         child->snp(_length);
 
-    std::sort(this->_mutations.begin(),this->_mutations.end());
+    std::sort(this->_point_mutations.begin(),this->_point_mutations.end());
 }
 void node::path(std::vector<uint32_t> &_path)
 {
     _path.insert(_path.begin(),this->id());
     if(this->parent()!=nullptr) this->parent()->path(_path);
+}
+std::vector<uint32_t> node::point_mutations(void)
+{
+    if(this->parent()!=nullptr)
+        {
+            std::vector<uint32_t> m=this->_point_mutations;
+            std::vector<uint32_t> n=this->parent()->point_mutations();
+            m.insert(m.end(),n.begin(),n.end());
+            return(m);
+        }
+    else return(this->_point_mutations);
+}
+uint32_t node::repeats(void)
+{
+	if(this->parent()!=nullptr)
+       return(this->_repeats+this->parent()->repeats());
+   else return(this->_repeats);
 }
