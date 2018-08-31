@@ -4,7 +4,6 @@ node::node(void)
     this->_parent=nullptr;
     this->_number_of_mutations=0U;
     this->_references=0U;
-    this->_repeats=0U;
     this->_id=(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count();
 }
 node::node(const node &_node)
@@ -13,8 +12,6 @@ node::node(const node &_node)
     this->_references=_node._references;
     this->_parent=_node._parent;
     this->_children=_node._children;
-    this->_repeats=_node._repeats;
-    this->_point_mutations=_node._point_mutations;
     this->_number_of_mutations=_node._number_of_mutations;
 }
 node& node::operator=(const node &_node)
@@ -23,15 +20,12 @@ node& node::operator=(const node &_node)
     this->_references=_node._references;
     this->_parent=_node._parent;
     this->_children=_node._children;
-    this->_repeats=_node._repeats;
-    this->_point_mutations=_node._point_mutations;
     this->_number_of_mutations=_node._number_of_mutations;
     return(*this);
 }
 node::~node(void)
 {
     this->_parent=nullptr;
-    this->_point_mutations.clear();
     this->_children.clear();
 }
 void node::child(std::shared_ptr<node> &_node)
@@ -236,9 +230,9 @@ std::vector<uint32_t> node::point_mutations(void)
 {
     if(this->parent()!=nullptr)
         {
-	         std::vector<uint32_t> ret;
-	         std::merge(this->_point_mutations.begin(),this->_point_mutations.end(),this->parent()->point_mutations().begin(),this->parent()->point_mutations().end(),std::back_inserter(ret));
-				auto it=std::unique(ret.begin(),ret.end());
+            std::vector<uint32_t> ret;
+            std::merge(this->_point_mutations.begin(),this->_point_mutations.end(),this->parent()->point_mutations().begin(),this->parent()->point_mutations().end(),std::back_inserter(ret));
+            auto it=std::unique(ret.begin(),ret.end());
             ret.resize(std::distance(ret.begin(),it));
             return(ret);
         }
