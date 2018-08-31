@@ -236,10 +236,11 @@ std::vector<uint32_t> node::point_mutations(void)
 {
     if(this->parent()!=nullptr)
         {
-            std::vector<uint32_t> m=this->_point_mutations;
-            std::vector<uint32_t> n=this->parent()->point_mutations();
-            m.insert(m.end(),n.begin(),n.end());
-            return(m);
+	         std::vector<uint32_t> ret;
+	         std::merge(this->_point_mutations.begin(),this->_point_mutations.end(),this->parent()->point_mutations().begin(),this->parent()->point_mutations().end(),std::back_inserter(ret));
+				auto it=std::unique(ret.begin(),ret.end());
+            ret.resize(std::distance(ret.begin(),it));
+            return(ret);
         }
     else return(this->_point_mutations);
 }
