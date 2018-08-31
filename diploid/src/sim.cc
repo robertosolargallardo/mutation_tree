@@ -153,7 +153,7 @@ void schedule(json &_fsettings)
 
     std::ofstream output(directory+"/input.json");
     output << std::setw(4) << _fsettings << std::endl;
-	
+
 
     std::uniform_int_distribution<uint32_t> uniform(0,_fsettings["scenarios"].size()-1);
 

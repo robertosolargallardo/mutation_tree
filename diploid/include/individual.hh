@@ -22,6 +22,6 @@ public:
     std::array<allele_t,2>& get(const uint32_t&) const;
     void increase(void);
 
-    void flush(void); 
+    void flush(void);
 };
 #endif

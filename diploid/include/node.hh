@@ -9,11 +9,12 @@ private:
     uint32_t                           _references;
     uint64_t                           _id;
 
-    uint32_t									_number_of_mutations;
+    uint32_t                           _number_of_mutations;
 
-	 union{
-        std::vector<uint32_t>              _point_mutations;
-        uint32_t                           _repeats;
+    union
+    {
+        std::vector<uint32_t> _point_mutations;
+        uint32_t              _repeats;
     };
 
     void remove(std::shared_ptr<node>);

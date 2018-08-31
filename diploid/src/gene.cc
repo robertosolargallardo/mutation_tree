@@ -107,7 +107,8 @@ void gene::mutate(void)
         }
         case STR:
         {
-            std::cout << "gene::mutate" << std::endl; getchar();
+            std::cout << "gene::mutate" << std::endl;
+            getchar();
             this->_root->srt();
             break;
         }

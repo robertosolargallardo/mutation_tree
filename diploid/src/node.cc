@@ -204,7 +204,8 @@ uint64_t node::id(void) const
 {
     return(this->_id);
 }
-void node::srt(void){
+void node::srt(void)
+{
     static thread_local std::mt19937 rng(time(0));
     std::binomial_distribution<uint32_t> binomial(this->_number_of_mutations,0.5);
 
@@ -244,7 +245,7 @@ std::vector<uint32_t> node::point_mutations(void)
 }
 uint32_t node::repeats(void)
 {
-	if(this->parent()!=nullptr)
-       return(this->_repeats+this->parent()->repeats());
-   else return(this->_repeats);
+    if(this->parent()!=nullptr)
+        return(this->_repeats+this->parent()->repeats());
+    else return(this->_repeats);
 }

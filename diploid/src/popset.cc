@@ -147,11 +147,12 @@ void popset::stats(const std::string &_directory)
                         case STR:
                         {
                             std::map<uint64_t,std::tuple<uint32_t,int>> alleles;
-                            for(auto& i : sample.second){
-                                std::array<allele_t,N_CHROMOSOMES> allele=i.get(position);
-	                             std::cout << allele[0]->repeats() << std::endl;
-	                             std::cout << allele[1]->repeats() << std::endl;
-                            }
+                            for(auto& i : sample.second)
+                                {
+                                    std::array<allele_t,N_CHROMOSOMES> allele=i.get(position);
+                                    std::cout << allele[0]->repeats() << std::endl;
+                                    std::cout << allele[1]->repeats() << std::endl;
+                                }
                             break;
                         }
                         default:

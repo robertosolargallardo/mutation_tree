@@ -101,45 +101,46 @@ void pop::drift(void)
 
     uint32_t pa=0U,pb=0U;
 
-	 std::vector<uint32_t> rnd(this->_population_size*N_CHROMOSOMES);
+    std::vector<uint32_t> rnd(this->_population_size*N_CHROMOSOMES);
     std::generate(rnd.begin(),rnd.end(),[&uniform](void)->uint32_t{return(uniform(rng));});
 
     for(uint32_t i=0U; i<this->_population_size; ++i)
         {
-				auto start=std::chrono::system_clock::now();
+            auto start=std::chrono::system_clock::now();
 
             for(uint32_t position=0U; position<this->_number_of_genes; ++position)
                 this->_dst[i].set(position,this->_src[rnd[N_CHROMOSOMES*i]].get(position)[coin(rng)],this->_src[rnd[N_CHROMOSOMES*i+1]].get(position)[coin(rng)]);
 
-				auto end=std::chrono::system_clock::now();
-				pa+=(end-start).count();
-           
-				start=std::chrono::system_clock::now();
-            if(i<number_of_mutations){
-               int chromosome=coin(rng);
-					allele_t allele=std::make_shared<node>();
-               std::array<allele_t,N_CHROMOSOMES> alleles=this->_dst[i].get(position);
-               allele->parent(alleles[chromosome]);
-               alleles[chromosome]->child(allele);
-               allele->mutate();
-               this->_dst[i].set(position,chromosome,allele);
-               (*this->_pool)[position].insert(allele);
+            auto end=std::chrono::system_clock::now();
+            pa+=(end-start).count();
 
-					++mutations;
-               if(mutations==mutations_per_gene[position])
-               {
-                   ++position;
-                   mutations=0U;
-               }
-				}
+            start=std::chrono::system_clock::now();
+            if(i<number_of_mutations)
+                {
+                    int chromosome=coin(rng);
+                    allele_t allele=std::make_shared<node>();
+                    std::array<allele_t,N_CHROMOSOMES> alleles=this->_dst[i].get(position);
+                    allele->parent(alleles[chromosome]);
+                    alleles[chromosome]->child(allele);
+                    allele->mutate();
+                    this->_dst[i].set(position,chromosome,allele);
+                    (*this->_pool)[position].insert(allele);
 
-				end=std::chrono::system_clock::now();
-				pb+=(end-start).count();
+                    ++mutations;
+                    if(mutations==mutations_per_gene[position])
+                        {
+                            ++position;
+                            mutations=0U;
+                        }
+                }
 
-				this->_dst[i].increase();
+            end=std::chrono::system_clock::now();
+            pb+=(end-start).count();
+
+            this->_dst[i].increase();
         }
     std::cout << pa << " " << pb << std::endl;
-	 std::swap(this->_src,this->_dst);
+    std::swap(this->_src,this->_dst);
     delete[] mutations_per_gene;
 }
 /*void pop::rebuild(void)

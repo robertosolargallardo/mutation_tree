@@ -27,11 +27,13 @@ individual::~individual(void)
 {
     ;
 }
-void individual::increase(void){
-    for(uint32_t i=0U; i<this->_number_of_genes; ++i){
-        this->_genes[i][0]->increase();
-        this->_genes[i][1]->increase();
-    }
+void individual::increase(void)
+{
+    for(uint32_t i=0U; i<this->_number_of_genes; ++i)
+        {
+            this->_genes[i][0]->increase();
+            this->_genes[i][1]->increase();
+        }
 }
 void individual::set(const uint32_t &_position,const uint32_t &_chromosome,const allele_t &_a)
 {
@@ -42,11 +44,13 @@ void individual::set(const uint32_t &_position,const allele_t &_a,const allele_t
     this->_genes[_position][0]=_a;
     this->_genes[_position][1]=_b;
 }
-void individual::flush(void){
-    for(uint32_t i=0U; i<this->_number_of_genes; ++i){
-        this->_genes[i][0]->references(0U);
-        this->_genes[i][1]->references(0U);
-    }
+void individual::flush(void)
+{
+    for(uint32_t i=0U; i<this->_number_of_genes; ++i)
+        {
+            this->_genes[i][0]->references(0U);
+            this->_genes[i][1]->references(0U);
+        }
 }
 std::array<allele_t,N_CHROMOSOMES>& individual::get(const uint32_t &_position) const
 {
