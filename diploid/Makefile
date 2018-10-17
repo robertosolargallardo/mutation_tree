@@ -2,7 +2,7 @@ TARGET=lib/libdiploid.so
 
 CXX=g++
 CXXFLAGS=-std=c++14 -g -ggdb -Wall -O3 -fPIC
-INCLUDE=-I./include -I/usr/local/include/nlohmann/
+INCLUDE=-I./include -I/usr/local/include
 OBJS=obj/node.o obj/pop.o obj/gene.o obj/individual.o obj/popset.o obj/event.o obj/evlist.o obj/simulator.o
 
 $(TARGET):$(OBJS)

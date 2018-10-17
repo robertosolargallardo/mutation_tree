@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <armadillo>
 #include <unistd.h>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
 #include <vector>
