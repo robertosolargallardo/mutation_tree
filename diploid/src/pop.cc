@@ -1,4 +1,5 @@
 #include <pop.hh>
+namespace diploid{
 pop::pop(void)
 {
     this->_id=0U;
@@ -101,15 +102,22 @@ void pop::drift(void)
 
     uint32_t pa=0U,pb=0U;
 
-    std::vector<uint32_t> rnd(this->_population_size*N_CHROMOSOMES);
-    std::generate(rnd.begin(),rnd.end(),[&uniform](void)->uint32_t{return(uniform(rng));});
+    std::vector<std::array<uint32_t,N_CHROMOSOMES>> p(this->_population_size);
+    std::generate(p.begin(),p.end(),[&uniform](void)->std::array<uint32_t,N_CHROMOSOMES> {return(std::array<uint32_t,N_CHROMOSOMES>{uniform(rng),uniform(rng)});});
+    std::sort(p.begin(),p.end(),[](const std::array<uint32_t,N_CHROMOSOMES> &a,const std::array<uint32_t,N_CHROMOSOMES> &b)->bool{return(a[0]<b[0]);});
+
+    std::vector<std::array<int,N_CHROMOSOMES>> c(this->_population_size);//TODO AJUSTAR AL NUMERO DE GENES
+    std::generate(c.begin(),c.end(),[&coin](void)->std::array<int,N_CHROMOSOMES> {return(std::array<int,N_CHROMOSOMES>{coin(rng),coin(rng)});});
+
+    std::vector<int> m(number_of_mutations);
+    std::generate(m.begin(),m.end(),[&coin](void)->int{return(coin(rng));});
 
     for(uint32_t i=0U; i<this->_population_size; ++i)
         {
             auto start=std::chrono::system_clock::now();
 
-            for(uint32_t position=0U; position<this->_number_of_genes; ++position)
-                this->_dst[i].set(position,this->_src[rnd[N_CHROMOSOMES*i]].get(position)[coin(rng)],this->_src[rnd[N_CHROMOSOMES*i+1]].get(position)[coin(rng)]);
+            for(uint32_t j=0U; j<this->_number_of_genes; ++j)
+                this->_dst[i].set(j,this->_src[p[i][0]].get(j)[c[i][0]],this->_src[p[i][1]].get(j)[c[i][1]]);
 
             auto end=std::chrono::system_clock::now();
             pa+=(end-start).count();
@@ -117,13 +125,11 @@ void pop::drift(void)
             start=std::chrono::system_clock::now();
             if(i<number_of_mutations)
                 {
-                    int chromosome=coin(rng);
                     allele_t allele=std::make_shared<node>();
-                    std::array<allele_t,N_CHROMOSOMES> alleles=this->_dst[i].get(position);
-                    allele->parent(alleles[chromosome]);
-                    alleles[chromosome]->child(allele);
+                    allele->parent(this->_dst[i].get(position)[m[i]]);
+                    this->_dst[i].get(position)[m[i]]->child(allele);
                     allele->mutate();
-                    this->_dst[i].set(position,chromosome,allele);
+                    this->_dst[i].set(position,m[i],allele);
                     (*this->_pool)[position].insert(allele);
 
                     ++mutations;
@@ -279,3 +285,4 @@ void pop::serialize(const std::string &_directory)
         }
     output.close();*/
 }
+};

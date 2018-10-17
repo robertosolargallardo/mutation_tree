@@ -1,8 +1,8 @@
 #ifndef _EVENT_H_
 #define _EVENT_H_
 #include <glob.hh>
+namespace diploid{
 enum event_t {CREATE=1654067888,INCREMENT=2313715464,SPLIT=396272975,DECREMENT=2641718177,ENDSIM=2660050579};
-
 class event
 {
 private:
@@ -23,5 +23,6 @@ public:
     void type(const event_t &_type);
     json params(void);
     void params(const json &_params);
+};
 };
 #endif

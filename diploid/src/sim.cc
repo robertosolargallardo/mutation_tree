@@ -1,101 +1,5 @@
-#include <glob.hh>
-#include <popset.hh>
-#include <evlist.hh>
+#include <simulator.hh>
 #include <sys/stat.h>
-
-class Simulator
-{
-private:
-    std::shared_ptr<popset> _popset;
-    std::shared_ptr<evlist> _evlist;
-
-public:
-    Simulator(void);
-    Simulator(const json&);
-    Simulator(const Simulator&);
-    Simulator& operator=(const Simulator&);
-    ~Simulator(void);
-
-    void run(const std::string&);
-};
-Simulator::Simulator(void)
-{
-    this->_popset=nullptr;
-    this->_evlist=nullptr;
-}
-Simulator::Simulator(const json &_fsettings)
-{
-    this->_popset=std::make_shared<popset>(_fsettings["individual"]);
-    this->_evlist=std::make_shared<evlist>(_fsettings["scenario"]);
-}
-Simulator::Simulator(const Simulator &_simulator)
-{
-    this->_popset=std::make_shared<popset>(*_simulator._popset);
-    this->_evlist=std::make_shared<evlist>(*_simulator._evlist);
-}
-Simulator& Simulator::operator=(const Simulator &_simulator)
-{
-    this->_popset=std::make_shared<popset>(*_simulator._popset);
-    this->_evlist=std::make_shared<evlist>(*_simulator._evlist);
-    return(*this);
-}
-Simulator::~Simulator(void)
-{
-
-}
-void Simulator::run(const std::string &_directory)
-{
-    uint32_t lvt=0U;
-
-    while(!this->_evlist->empty())
-        {
-            std::shared_ptr<event> e=this->_evlist->top();
-
-            for(; lvt<e->timestamp(); ++lvt)
-                {
-                    this->_popset->drift();
-                    if(!last(e)) this->_popset->flush();
-                }
-
-            switch(e->type())
-                {
-                case CREATE:
-                {
-                    this->_popset->create(e->params());
-                    break;
-                }
-                case INCREMENT:
-                {
-                    this->_popset->increment(e->params());
-                    break;
-                }
-                case DECREMENT:
-                {
-                    this->_popset->decrement(e->params());
-                    break;
-                }
-                case SPLIT:
-                {
-                    this->_popset->split(e->params());
-                    break;
-                }
-                case ENDSIM:
-                {
-                    this->_popset->mutate();
-                    break;
-                }
-                default:
-                {
-                    std::cerr << "unknown event " << e->type() << std::endl;
-                    exit(EXIT_FAILURE);
-                }
-
-                }
-            this->_evlist->pop();
-        }
-    this->_popset->stats(_directory);
-    this->_popset->save(_directory);
-}
 void parse(json &_settings)
 {
     static thread_local std::mt19937 rng(time(0));
@@ -156,7 +60,6 @@ void schedule(json &_fsettings)
 
 
     std::uniform_int_distribution<uint32_t> uniform(0,_fsettings["scenarios"].size()-1);
-
     json scenario=_fsettings["scenarios"][uniform(rng)];
     _fsettings.erase("scenarios");
     _fsettings["scenario"]=scenario;

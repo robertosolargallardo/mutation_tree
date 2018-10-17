@@ -5,6 +5,7 @@
 #include <gene.hh>
 #include <individual.hh>
 
+namespace diploid{
 class pop
 {
 private:
@@ -37,5 +38,6 @@ public:
     uint32_t id(void) const;
 
     void serialize(const std::string&);
+};
 };
 #endif

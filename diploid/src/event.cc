@@ -1,4 +1,5 @@
 #include <event.hh>
+namespace diploid{
 event::event(void)
 {
     ;
@@ -50,3 +51,4 @@ void event::params(const json &_params)
 {
     this->_params=_params;
 }
+};

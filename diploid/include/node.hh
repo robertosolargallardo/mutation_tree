@@ -1,6 +1,7 @@
 #ifndef _NODE_HH_
 #define _NODE_HH_
 #include <glob.hh>
+namespace diploid{
 class node : public std::enable_shared_from_this<node>
 {
 private:
@@ -53,5 +54,6 @@ public:
 
     std::vector<uint32_t> point_mutations(void);
     uint32_t repeats(void);
+};
 };
 #endif

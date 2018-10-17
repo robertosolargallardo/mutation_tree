@@ -3,6 +3,7 @@
 #include <glob.hh>
 #include <gene.hh>
 #define N_CHROMOSOMES 2
+namespace diploid{
 class individual
 {
 private:
@@ -23,5 +24,6 @@ public:
     void increase(void);
 
     void flush(void);
+};
 };
 #endif

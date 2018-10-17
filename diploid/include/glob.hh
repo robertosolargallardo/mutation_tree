@@ -15,6 +15,8 @@
 #include <queue>
 #include <list>
 #include <set>
+namespace diploid{
 using json=nlohmann::json;
 enum dist_t {UNIFORM=3830327609};
+};
 #endif

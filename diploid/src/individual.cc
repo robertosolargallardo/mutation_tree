@@ -1,4 +1,5 @@
 #include <individual.hh>
+namespace diploid{
 individual::individual(void)
 {
     this->_number_of_genes=0U;
@@ -56,3 +57,4 @@ std::array<allele_t,N_CHROMOSOMES>& individual::get(const uint32_t &_position) c
 {
     return(this->_genes[_position]);
 }
+};

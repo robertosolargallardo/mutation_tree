@@ -1,11 +1,71 @@
 #ifndef _STATISTICS_H_
 #define _STATISTICS_H_
 #include <glob.hh>
+namespace diploid{
 class statistics
 {
 public:
+    typedef std::map<uint32_t,int> istat_str_t;
+    static std::map<std::string,double> str(const istat_str_t &_alleles){
+       std::map<std::string,double> stats;
+       uint32_t total=0U;		 
+  
+       std::for_each(_alleles.begin(),_alleles.end(),[&total](const istat_str_t::value_type &_count)->void{total+=_count.second;});
+
+	    stats["mean-number-of-alleles"]=statistics::mean_number_of_alleles(_alleles);
+	    stats["mean-gene-diversity"]=statistics::mean_gene_diversity(_alleles,total);
+	    stats["mean-allele-size-variance"]=statistics::mean_allele_size_variance(_alleles);
+
+	    std::cout << stats["mean-number-of-alleles"] << std::endl;
+	    std::cout << stats["mean-gene-diversity"] << std::endl;
+	    std::cout << stats["mean-allele-size-variance"] << std::endl;
+       return(stats);
+    }
+    static double mean_number_of_alleles(const istat_str_t &_alleles){
+        return(double(_alleles.size()));
+    }
+    static double mean_gene_diversity(const istat_str_t &_alleles,const uint32_t &_total){
+       double sum=0.0;
+
+	    for(auto &i : _alleles){
+          double freq=(double(i.second)/double(_total));
+          sum+=freq*freq;
+       }
+	
+       return(1.0-sum);
+    }
+    static double mean_allele_size_variance(const istat_str_t &_alleles){
+       double mean=0.0,var=0.0;
+
+	    for(auto &i : _alleles)
+          mean+=double(i.first);
+	    mean/=double(_alleles.size());
+
+	    for(auto &i : _alleles){
+  			double diff=double(i.first)-mean;
+			var+=diff*diff;
+		 }
+
+		 return(var/double(_alleles.size()));
+    }
+    static double mean_M_index(){
+        return(0.0);
+    }
+    static double FST(){
+        return(0.0);
+    }
+    static double mean_index_of_classification(){
+        return(0.0);
+    }
+    static double shared_allele_distance(){
+        return(0.0);
+    }
+    static double genetic_distance(){
+        return(0.0);
+    }
+
     typedef std::map<uint64_t,std::tuple<std::vector<uint32_t>,int>> istat_t;
-    static std::map<std::string,double> stats(const istat_t &_alleles)
+    static std::map<std::string,double> snp(const istat_t &_alleles)
     {
         std::map<std::string,double> stats;
         double N=std::accumulate(_alleles.begin(),_alleles.end(),0.0,[](double value,const istat_t::value_type& a)
@@ -112,5 +172,6 @@ public:
 
         return res;
     }
+};
 };
 #endif

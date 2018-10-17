@@ -1,4 +1,5 @@
 #include <popset.hh>
+namespace diploid{
 popset::popset(void)
 {
     this->_number_of_genes=0U;
@@ -146,13 +147,14 @@ void popset::stats(const std::string &_directory)
                         }
                         case STR:
                         {
-                            std::map<uint64_t,std::tuple<uint32_t,int>> alleles;
+                            std::map<uint32_t,int> alleles;
                             for(auto& i : sample.second)
                                 {
                                     std::array<allele_t,N_CHROMOSOMES> allele=i.get(position);
-                                    std::cout << allele[0]->repeats() << std::endl;
-                                    std::cout << allele[1]->repeats() << std::endl;
+                                    alleles[allele[0]->repeats()]++;
+                                    alleles[allele[1]->repeats()]++;
                                 }
+                            fstats.push_back({"population",{{"name",sample.first},{"statistics",statistics::str(alleles)}}});
                             break;
                         }
                         default:
@@ -186,3 +188,4 @@ void popset::mutate(void)
     for(uint32_t position=0U; position<this->_number_of_genes; ++position)
         (*this->_pool)[position].mutate();
 }
+};

@@ -1,0 +1,58 @@
+{
+    "batch-size": 10000,
+    "feedback": 0,
+    "id": 1001,
+    "individual": {
+        "genes": [
+            {
+                "mutation": {
+                    "model": 0,
+                    "rate": 0.000915216400751778
+                },
+                "type": 1
+            }
+        ],
+        "ploidy": 2
+    },
+    "max-number-of-simulations": 100000,
+    "name": "Scenario A",
+    "population-increase-phases": 0,
+    "scenarios": [
+        {
+            "events": [
+                {
+                    "id": 0,
+                    "params": {
+                        "population": {
+                            "name": "p0",
+                            "size": 10000
+                        }
+                    },
+                    "timestamp": 0,
+                    "type": "create"
+                },
+                {
+                    "id": 1,
+                    "params": {
+                        "sampling": [
+                            {
+                                "name": "sample1",
+                                "source": {
+                                    "population": {
+                                        "name": "p0"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "timestamp": 20000,
+                    "type": "endsim"
+                }
+            ],
+            "id": 0,
+            "model": 0
+        }
+    ],
+    "type": "init",
+    "user": 0
+}

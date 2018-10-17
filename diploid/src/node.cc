@@ -1,4 +1,5 @@
 #include <node.hh>
+namespace diploid{
 node::node(void)
 {
     this->_parent=nullptr;
@@ -244,3 +245,4 @@ uint32_t node::repeats(void)
         return(this->_repeats+this->parent()->repeats());
     else return(this->_repeats);
 }
+};

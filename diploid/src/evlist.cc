@@ -1,4 +1,5 @@
 #include <evlist.hh>
+namespace diploid{
 evlist::evlist(void)
 {
     this->_lvt=0U;
@@ -44,4 +45,5 @@ evlist::~evlist(void)
 {
     while(!this->empty())
         this->pop();
+}
 }

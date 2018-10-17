@@ -18,8 +18,8 @@
 						"distribution": {
 							"type": "uniform",
 							"params": {
-								"a": 0.0001,
-								"b": 0.001
+								"a": 0.001,
+								"b": 0.01
 							}
 						}
 				},
@@ -45,8 +45,8 @@
 						"distribution": {
 							"type": "uniform",
 							"params": {
-								"a": 9999,
-								"b": 10000
+								"a": 19999,
+								"b": 20000
 							}
 						}
 					}
@@ -60,8 +60,8 @@
 				"distribution": {
 					"type": "uniform",
 					"params": {
-						"a": 9999,
-						"b": 10000
+						"a": 19999,
+						"b": 20000
 					}
 				}
 			},
