@@ -2,6 +2,7 @@
 #define _INDIVIDUAL_HH_
 #include <glob.hh>
 #include <gene.hh>
+namespace haploid{
 class individual
 {
 private:
@@ -23,5 +24,6 @@ public:
     allele_t& get(const uint32_t&) const;
     uint32_t references(void) const;
 
+};
 };
 #endif

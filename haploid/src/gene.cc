@@ -1,4 +1,5 @@
 #include <gene.hh>
+namespace haploid{
 gene::gene(void)
 {
     this->_rate=0.0;
@@ -116,3 +117,4 @@ void gene::mutate(void)
         }
         }
 }
+};

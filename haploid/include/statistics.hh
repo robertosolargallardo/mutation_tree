@@ -1,6 +1,8 @@
 #ifndef _STATISTICS_H_
 #define _STATISTICS_H_
 #include <glob.hh>
+
+namespace haploid{
 class statistics
 {
 public:
@@ -112,5 +114,6 @@ public:
 
         return res;
     }
+};
 };
 #endif

@@ -1,4 +1,5 @@
 #include <individual.hh>
+namespace haploid{
 individual::individual(void)
 {
     this->_references=0U;
@@ -55,3 +56,4 @@ uint32_t individual::references(void) const
 {
     return(this->_references);
 }
+};

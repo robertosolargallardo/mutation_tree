@@ -1,6 +1,7 @@
 #ifndef _NODE_HH_
 #define _NODE_HH_
 #include <glob.hh>
+namespace haploid{
 class node : public std::enable_shared_from_this<node>
 {
 private:
@@ -45,5 +46,6 @@ public:
     void unserialize(const std::string&);
 
     void snp(const uint32_t&);
+};
 };
 #endif

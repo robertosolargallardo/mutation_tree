@@ -1,4 +1,5 @@
 #include <popset.hh>
+namespace haploid{
 popset::popset(void)
 {
     this->_number_of_genes=0U;
@@ -163,3 +164,4 @@ void popset::mutate(void)
     for(uint32_t position=0U; position<this->_number_of_genes; ++position)
         (*this->_pool)[position].mutate();
 }
+};

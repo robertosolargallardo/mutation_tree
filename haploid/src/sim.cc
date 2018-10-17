@@ -3,6 +3,7 @@
 #include <evlist.hh>
 #include <sys/stat.h>
 
+namespace haploid{
 class Simulator
 {
 private:
@@ -199,3 +200,4 @@ int main(int argc,char** argv)
     return(0);
 }
 
+};

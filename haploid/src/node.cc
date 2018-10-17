@@ -1,4 +1,5 @@
 #include <node.hh>
+namespace haploid{
 node::node(void)
 {
     this->_parent=nullptr;
@@ -230,3 +231,4 @@ void node::path(std::vector<uint32_t> &_path)
     _path.insert(_path.begin(),this->id());
     if(this->parent()!=nullptr) this->parent()->path(_path);
 }
+};

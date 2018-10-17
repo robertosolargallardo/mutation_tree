@@ -4,6 +4,7 @@
 #include <util.hh>
 #include <glob.hh>
 
+namespace haploid{
 class evlist
 {
 private:
@@ -30,5 +31,6 @@ public:
     uint32_t lvt(void);
 
     ~evlist(void);
+};
 };
 #endif

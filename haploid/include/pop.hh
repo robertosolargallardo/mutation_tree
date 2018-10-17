@@ -4,7 +4,7 @@
 #include <node.hh>
 #include <gene.hh>
 #include <individual.hh>
-
+namespace haploid{
 class pop
 {
 private:
@@ -39,5 +39,6 @@ public:
     uint32_t id(void) const;
 
     void serialize(const std::string&);
+};
 };
 #endif

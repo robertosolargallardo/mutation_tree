@@ -4,6 +4,7 @@
 #include <glob.hh>
 #include <statistics.hh>
 
+namespace haploid{
 class popset
 {
 private:
@@ -33,5 +34,6 @@ public:
     void save(const std::string&);
 
     void stats(const std::string&);
+};
 };
 #endif

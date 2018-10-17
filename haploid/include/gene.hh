@@ -3,6 +3,7 @@
 #include <glob.hh>
 #include <node.hh>
 
+namespace haploid{
 typedef std::shared_ptr<node> allele_t;
 enum dna_t {SNP=0U,STR=1U,UNKNOWN};
 
@@ -41,5 +42,6 @@ public:
     void serialize(const std::string&) const;
 
     json save(void);
+};
 };
 #endif

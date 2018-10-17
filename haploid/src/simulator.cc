@@ -1,4 +1,5 @@
 #include <simulator.hh>
+namespace haploid{
 Simulator::Simulator(void)
 {
     this->_popset=nullptr;
@@ -77,3 +78,4 @@ void Simulator::run(const std::string &_directory)
     this->_popset->stats(_directory);
     this->_popset->save(_directory);
 }
+};

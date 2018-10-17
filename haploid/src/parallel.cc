@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+namespace haploid{
 void run(const uint32_t &POPULATION_SIZE,const uint32_t &NUMBER_OF_GENERATIONS,const json &PROFILE)
 {
 
@@ -99,3 +100,4 @@ int main(int argc,char** argv)
 
     return(0);
 }
+};

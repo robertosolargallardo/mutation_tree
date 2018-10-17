@@ -1,4 +1,5 @@
 #include <pop.hh>
+namespace haploid{
 pop::pop(void)
 {
     this->_id=0U;
@@ -305,3 +306,4 @@ void pop::serialize(const std::string &_directory)
         }
     output.close();
 }
+};

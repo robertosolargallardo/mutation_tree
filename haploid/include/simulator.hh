@@ -5,6 +5,7 @@
 #include <evlist.hh>
 #include <sys/stat.h>
 
+namespace haploid{
 class Simulator
 {
 private:
@@ -19,5 +20,6 @@ public:
     ~Simulator(void);
 
     void run(const std::string&);
+};
 };
 #endif

@@ -1,4 +1,5 @@
 #include <evlist.hh>
+namespace haploid{
 evlist::evlist(void)
 {
     this->_lvt=0U;
@@ -45,3 +46,4 @@ evlist::~evlist(void)
     while(!this->empty())
         this->pop();
 }
+};
