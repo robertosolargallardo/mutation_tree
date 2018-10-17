@@ -2,7 +2,7 @@ TARGET=lib/libhaploid.so
 
 CXX=g++
 CXXFLAGS=-std=c++14 -g -ggdb -Wall -O3 -fPIC
-INCLUDE=-I./include -I/usr/local/include/nlohmann/
+INCLUDE=-I./include -I/usr/local/include
 OBJS=obj/node.o obj/pop.o obj/gene.o obj/individual.o obj/popset.o obj/event.o obj/evlist.o
 
 $(TARGET):$(OBJS)
@@ -26,4 +26,4 @@ obj/individual.o:src/individual.cc include/individual.hh
 obj/sim.o:src/sim.cc 
 			 $(CXX) $< -c -o $@ $(CXXFLAGS) $(INCLUDE) 
 clean:
-	  ${RM} $(OBJS1) $(OBJS2) $(TARGET1) $(TARGET2) 
+	  ${RM} $(OBJS) $(TARGET)
