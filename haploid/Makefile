@@ -1,16 +1,13 @@
-TARGET1=sim
-TARGET2=parallel
+TARGET=lib/libhaploid.so
 
 CXX=g++
-CXXFLAGS=-std=c++14 -g -ggdb -Wall -O3
+CXXFLAGS=-std=c++14 -g -ggdb -Wall -O3 -fPIC
 INCLUDE=-I./include -I/usr/local/include/nlohmann/
-OBJS1=obj/node.o obj/sim.o obj/pop.o obj/gene.o obj/individual.o obj/popset.o obj/event.o obj/evlist.o
+OBJS=obj/node.o obj/pop.o obj/gene.o obj/individual.o obj/popset.o obj/event.o obj/evlist.o
 
-all:
-	 make $(TARGET1)
-
-$(TARGET1):$(OBJS1)
-		    $(CXX) $^ -o $@ $(CXXFLAGS) $(INCLUDE) 
+$(TARGET):$(OBJS)
+			 $(CXX) -fPIC -shared $^ -o $@
+#		    $(CXX) $^ -o $@ $(CXXFLAGS) $(INCLUDE) 
 
 obj/node.o:src/node.cc include/node.hh
 			     $(CXX) $< -c -o $@ $(CXXFLAGS) $(INCLUDE) 
