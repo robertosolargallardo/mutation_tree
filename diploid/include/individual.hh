@@ -1,5 +1,5 @@
-#ifndef _INDIVIDUAL_HH_
-#define _INDIVIDUAL_HH_
+#ifndef _DIPLOID_INDIVIDUAL_HH_
+#define _DIPLOID_INDIVIDUAL_HH_
 #include <glob.hh>
 #include <gene.hh>
 #define N_CHROMOSOMES 2

@@ -1,5 +1,5 @@
-#ifndef _POP_HH_
-#define _POP_HH_
+#ifndef _HAPLOID_POP_HH_
+#define _HAPLOID_POP_HH_
 #include <glob.hh>
 #include <node.hh>
 #include <gene.hh>

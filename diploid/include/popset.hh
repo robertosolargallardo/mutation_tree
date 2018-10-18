@@ -1,5 +1,5 @@
-#ifndef _POPSET_HH_
-#define _POPSET_HH_
+#ifndef _DIPLOID_POPSET_HH_
+#define _DIPLOID_POPSET_HH_
 #include <pop.hh>
 #include <glob.hh>
 #include <statistics.hh>

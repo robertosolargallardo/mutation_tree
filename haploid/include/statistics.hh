@@ -1,5 +1,5 @@
-#ifndef _STATISTICS_H_
-#define _STATISTICS_H_
+#ifndef _HAPLOID_STATISTICS_H_
+#define _HAPLOID_STATISTICS_H_
 #include <glob.hh>
 
 namespace haploid{

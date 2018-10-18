@@ -1,5 +1,5 @@
-#ifndef _STATISTICS_H_
-#define _STATISTICS_H_
+#ifndef _DIPLOID_STATISTICS_H_
+#define _DIPLOID_STATISTICS_H_
 #include <glob.hh>
 namespace diploid{
 class statistics

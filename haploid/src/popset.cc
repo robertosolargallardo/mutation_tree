@@ -148,7 +148,7 @@ void popset::stats(const std::string &_directory)
                         {
                             allele_t allele=i.get(position);
                             if(alleles.count(allele->id())==0)
-                                alleles[allele->id()]=std::tuple<std::vector<uint32_t>,int>(allele->mutations(),1);
+                                alleles[allele->id()]=std::tuple<std::vector<uint32_t>,int>(allele->point_mutations(),1);
                             else
                                 std::get<1>(alleles[allele->id()])++;
                         }

@@ -1,31 +1,31 @@
 #include <simulator.hh>
 namespace diploid{
-Simulator::Simulator(void)
+simulator::simulator(void)
 {
     this->_popset=nullptr;
     this->_evlist=nullptr;
 }
-Simulator::Simulator(const json &_fsettings)
+simulator::simulator(const json &_fsettings)
 {
     this->_popset=std::make_shared<popset>(_fsettings["individual"]);
     this->_evlist=std::make_shared<evlist>(_fsettings["scenario"]);
 }
-Simulator::Simulator(const Simulator &_simulator)
+simulator::simulator(const simulator &_simulator)
 {
     this->_popset=std::make_shared<popset>(*_simulator._popset);
     this->_evlist=std::make_shared<evlist>(*_simulator._evlist);
 }
-Simulator& Simulator::operator=(const Simulator &_simulator)
+simulator& simulator::operator=(const simulator &_simulator)
 {
     this->_popset=std::make_shared<popset>(*_simulator._popset);
     this->_evlist=std::make_shared<evlist>(*_simulator._evlist);
     return(*this);
 }
-Simulator::~Simulator(void)
+simulator::~simulator(void)
 {
 
 }
-void Simulator::run(const std::string &_directory)
+void simulator::run(const std::string &_directory)
 {
     uint32_t lvt=0U;
 

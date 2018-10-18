@@ -1,23 +1,23 @@
-#ifndef _SIMULATOR_HH_
-#define _SIMULATOR_HH_
+#ifndef _HAPLOID_SIMULATOR_HH_
+#define _HAPLOID_SIMULATOR_HH_
 #include <glob.hh>
 #include <popset.hh>
 #include <evlist.hh>
 #include <sys/stat.h>
 
 namespace haploid{
-class Simulator
+class simulator
 {
 private:
     std::shared_ptr<popset> _popset;
     std::shared_ptr<evlist> _evlist;
 
 public:
-    Simulator(void);
-    Simulator(const json&);
-    Simulator(const Simulator&);
-    Simulator& operator=(const Simulator&);
-    ~Simulator(void);
+    simulator(void);
+    simulator(const json&);
+    simulator(const simulator&);
+    simulator& operator=(const simulator&);
+    ~simulator(void);
 
     void run(const std::string&);
 };

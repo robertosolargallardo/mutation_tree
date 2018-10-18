@@ -1,5 +1,5 @@
-#ifndef _INDIVIDUAL_HH_
-#define _INDIVIDUAL_HH_
+#ifndef _HAPLOID_INDIVIDUAL_HH_
+#define _HAPLOID_INDIVIDUAL_HH_
 #include <glob.hh>
 #include <gene.hh>
 namespace haploid{
